@@ -1,0 +1,9 @@
+{
+    
+	"rmiPort":"1997",
+    
+	"rmiAddress":"localhost",
+    
+	"rmiService":"rmiService"
+
+}

@@ -8,6 +8,7 @@ package com.team6.runs;
 import com.team6.common.User;
 import com.team6.views.HomeForm;
 import com.team6.views.SignUpForm;
+import java.util.ArrayList;
 
 /**
  *
@@ -23,6 +24,16 @@ public class TestRun {
         HomeForm hmForm = new HomeForm();
         hmForm.setUser(new User("ztr", "123", "Nguyen Quoc Hung", 1000, 0));
         hmForm.setVisible(true);
+        
+        ArrayList<User> list = new ArrayList<>();
+        
+        list.add(new User("aksjd", "asd", "asd", 12, 0));
+        list.add(new User("aksjd", "asd", "asd", 12, 0));
+        list.add(new User("aksjd", "asd", "asd", 12, 0));
+        list.add(new User("aksjd", "asd", "asd", 12, 0));
+        list.add(new User("aksjd", "asd", "asd", 12, 0));
+        
+        hmForm.setListUsers(list);
     }
     
 }

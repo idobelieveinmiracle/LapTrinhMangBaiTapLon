@@ -7,10 +7,13 @@ package com.team6.controllers;
 
 import com.team6.common.RMIInterface;
 import com.team6.common.User;
+import com.team6.views.HomeForm;
 import com.team6.views.LoginForm;
 import com.team6.views.SignUpForm;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -34,6 +37,7 @@ import org.json.simple.parser.ParseException;
 public class ClientMainController {
     private LoginForm loginForm;
     private SignUpForm signupForm;
+    private HomeForm homeForm;
     
     private RMIInterface rmiServer;
     private Registry registry;
@@ -51,11 +55,19 @@ public class ClientMainController {
     private void initForms(){
         loginForm = new LoginForm();
         signupForm = new SignUpForm();
+        homeForm = new HomeForm();
         
         signupForm.addBtnSignUpFormActionListener(new MainControllerActionListener());
         loginForm.addBtnsActionListener(new MainControllerActionListener());
+        homeForm.addHomeFormActionListener(new MainControllerActionListener());
         
         loginForm.setVisible(true);
+        
+        homeForm.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                
+            }
+        });
     }
     
     private void initRMI(){

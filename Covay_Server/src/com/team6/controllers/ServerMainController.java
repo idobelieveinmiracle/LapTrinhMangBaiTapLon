@@ -19,6 +19,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.simple.JSONObject;
@@ -38,7 +39,10 @@ public class ServerMainController extends UnicastRemoteObject implements RMIInte
     private String rmiService;
     private Connection conn;
     
-    public ServerMainController() throws RemoteException{        
+    private ArrayList<User> listOnlineUsers;
+    
+    public ServerMainController() throws RemoteException{ 
+        listOnlineUsers = new ArrayList<>();
         initVariables();
         createRegistry();
         initConnection();

@@ -10,6 +10,7 @@ import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -34,8 +35,10 @@ public class HomeForm extends JFrame{
     private JTable tblListUsers;
     private DefaultTableModel mdlListUsers;
     
-    private JPanel buttonContent;
+    private JPanel changeInfoContent;
     private JButton btnInvite;
+    private JButton btnChangeInfo;
+    private JButton btnChangePassword;
     
     private GridBagConstraints c;
 
@@ -51,17 +54,24 @@ public class HomeForm extends JFrame{
         content.setLayout(new GridBagLayout());
         
         c = new GridBagConstraints();
-        c.fill = GridBagConstraints.HORIZONTAL;
         c.insets = new Insets(3, 3, 3, 3);
+                
+        c.fill = GridBagConstraints.HORIZONTAL;
+        
         c.gridx = 0;
         c.gridy = 0;
-        content.add(userInfoContent, c);
+        content.add(changeInfoContent, c);
         
         c.gridy = 1;
-        content.add(scrListUsers, c);
+        content.add(userInfoContent, c);
         
         c.gridy = 2;
-        content.add(buttonContent, c);
+        content.add(scrListUsers, c);
+        
+        c.fill = GridBagConstraints.NONE;
+        c.anchor = GridBagConstraints.CENTER;
+        c.gridy = 3;
+        content.add(btnInvite, c);
         
         this.pack();
         this.setResizable(false);
@@ -111,7 +121,7 @@ public class HomeForm extends JFrame{
     }   
     
     private void setListUsersContent(){
-        String[] columnNames = {"Username", "Name", "Score"};
+        String[] columnNames = {"Username", "Name", "Score", "Status"};
         Object[][] data = {};
         
         tblListUsers = new JTable(){
@@ -129,17 +139,24 @@ public class HomeForm extends JFrame{
         tblListUsers.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     }
     
-    private void setButtonContent(){
-        buttonContent = new JPanel(new GridBagLayout());
-        
+    private void setButtonContent(){        
+        changeInfoContent = new JPanel(new GridBagLayout());
         btnInvite = new JButton("Invite");
+        btnChangeInfo = new JButton("Change Information");
+        btnChangePassword = new JButton("Change Password");   
         
         c = new GridBagConstraints();
         
-        c.fill = GridBagConstraints.HORIZONTAL;
+        c.fill = GridBagConstraints.NONE;
+        c.anchor = GridBagConstraints.WEST;
         c.insets = new Insets(3, 3, 3, 3);
+        c.gridx = 0;
+        c.gridy = 0;
+        changeInfoContent.add(btnChangeInfo, c);
+        c.gridx = 1;
+        changeInfoContent.add(btnChangePassword, c);
         
-        buttonContent.add(btnInvite, c);
+        
     }
     
     public void setUser(User user){
@@ -156,9 +173,14 @@ public class HomeForm extends JFrame{
         
         for(User r: listUsers){
             mdlListUsers.addRow(new Object[]{
-                r.getUsername(), r.getName(), r.getScore()
+                r.getUsername(), r.getName(), r.getScore(), r.getStatusString()
             });
         }
+    }
+    
+    public void addHomeFormActionListener(ActionListener log){
+        btnChangeInfo.addActionListener(log);
+        btnInvite.addActionListener(log);
     }
     
 }

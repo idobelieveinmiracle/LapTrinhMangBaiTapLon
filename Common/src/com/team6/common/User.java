@@ -13,8 +13,8 @@ import java.io.Serializable;
  */
 public class User implements Serializable{
     
-    public static final int ON = 1;
-    public static final int OFF = 0;
+    public static final int FREE = 0;
+    public static final int BUSY = 1;
     
     private String username;
     private String password;
@@ -92,6 +92,9 @@ public class User implements Serializable{
         return this.username.hashCode();
     }
     
-    
+    public String getStatusString(){
+        if (this.status == FREE) return "Free";
+        return "Busy";
+    }
     
 }

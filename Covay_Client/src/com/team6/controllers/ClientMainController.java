@@ -39,6 +39,8 @@ public class ClientMainController {
     private SignUpForm signupForm;
     private HomeForm homeForm;
     
+    private User user;
+    
     private RMIInterface rmiServer;
     private Registry registry;
     
@@ -65,7 +67,11 @@ public class ClientMainController {
         
         homeForm.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
-                
+                try {
+                    rmiServer.logOut(user.getUsername());
+                } catch (RemoteException ex) {
+                    Logger.getLogger(ClientMainController.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }
@@ -103,6 +109,14 @@ public class ClientMainController {
         }
     }
     
+    public void setUser(User user){
+        this.user = user;
+    }
+    
+    public User getUser(){
+        return this.user;
+    }
+    
     private class MainControllerActionListener implements ActionListener{
 
         @Override
@@ -110,14 +124,16 @@ public class ClientMainController {
             if(e.getSource().equals(loginForm.getBtnLogin())){
                 String username = loginForm.getUsername();
                 String password = loginForm.getPassword();
-                if (!username.equals("") &&
-                        !password.equals(""))
-                {
+                if (!username.equals("") && !password.equals("")){
                     try {
                         User user = rmiServer.checkLogin(username, password);
                         
                         if (user != null){
-                            JOptionPane.showMessageDialog(loginForm, "Cậu đã nhập đúng tên đăng nhập hoặc mật khẩu");
+                            setUser(user);
+                            loginForm.setVisible(false);
+                            homeForm.setUser(user);
+                            homeForm.setListUsers(rmiServer.getAllOnlineUsers(), user.getUsername());
+                            homeForm.setVisible(true);
                         } else JOptionPane.showMessageDialog(loginForm, "Cậu đã nhập sai tên đăng nhập hoặc mật khẩu");
                     } catch (RemoteException ex) {
                         JOptionPane.showMessageDialog(loginForm, "Tớ cảm thấy có gì đó sai sai");

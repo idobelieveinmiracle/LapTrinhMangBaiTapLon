@@ -166,21 +166,34 @@ public class HomeForm extends JFrame{
         txtScore.setText(String.valueOf(user.getScore()));
     }
     
-    public void setListUsers(ArrayList<User> listUsers){
+    public void setListUsers(ArrayList<User> listUsers, String username){
         int rowCount = tblListUsers.getRowCount();
         
         for (int i = 0; i < rowCount; i ++) mdlListUsers.removeRow(0);
         
         for(User r: listUsers){
-            mdlListUsers.addRow(new Object[]{
+            if (!r.getUsername().equals(username))mdlListUsers.addRow(new Object[]{
                 r.getUsername(), r.getName(), r.getScore(), r.getStatusString()
             });
         }
+    }
+
+    public JButton getBtnInvite() {
+        return btnInvite;
+    }
+
+    public JButton getBtnChangeInfo() {
+        return btnChangeInfo;
+    }
+
+    public JButton getBtnChangePassword() {
+        return btnChangePassword;
     }
     
     public void addHomeFormActionListener(ActionListener log){
         btnChangeInfo.addActionListener(log);
         btnInvite.addActionListener(log);
+        btnChangePassword.addActionListener(log);
     }
     
 }

@@ -20,6 +20,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.simple.JSONObject;
@@ -39,10 +40,10 @@ public class ServerMainController extends UnicastRemoteObject implements RMIInte
     private String rmiService;
     private Connection conn;
     
-    private ArrayList<User> listOnlineUsers;
+    private HashSet<User> setOnlineUsers;
     
     public ServerMainController() throws RemoteException{ 
-        listOnlineUsers = new ArrayList<>();
+        setOnlineUsers = new HashSet<>();
         initVariables();
         createRegistry();
         initConnection();
@@ -178,13 +179,24 @@ public class ServerMainController extends UnicastRemoteObject implements RMIInte
                 user.setName(rs.getString(3));
                 user.setScore(rs.getInt(4));
                 
-                return user;
+                if (setOnlineUsers.add(user)) return user;
+                else return null;
             }
         } catch (SQLException ex) {
             Logger.getLogger(ServerMainController.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         return user;
+    }
+
+    @Override
+    public void logOut(String username) throws RemoteException {
+        setOnlineUsers.remove(new User(username, "", "", 0, 0));
+    }
+
+    @Override
+    public ArrayList<User> getAllOnlineUsers() throws RemoteException {
+        return new ArrayList<>(setOnlineUsers);
     }
     
 }

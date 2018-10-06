@@ -9,6 +9,7 @@ import com.team6.common.User;
 import com.team6.views.HomeForm;
 import com.team6.views.SignUpForm;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 /**
  *
@@ -21,19 +22,21 @@ public class TestRun {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        HomeForm hmForm = new HomeForm();
-        hmForm.setUser(new User("ztr", "123", "Nguyen Quoc Hung", 1000, 0));
-        hmForm.setVisible(true);
+        User user = new User("abc", "asasdc", "aasdsasd", 1, 1);
+        User user1 = new User("abc", "asasdddddd", "assdasaaaad", 1, 1);
         
+        HashSet<User> set = new HashSet<>();
         ArrayList<User> list = new ArrayList<>();
         
-        list.add(new User("aksjd", "asd", "asd", 12, 0));
-        list.add(new User("aksjd", "asd", "asd", 12, 0));
-        list.add(new User("aksjd", "asd", "asd", 12, 0));
-        list.add(new User("aksjd", "asd", "asd", 12, 0));
-        list.add(new User("aksjd", "asd", "asd", 12, 0));
+        set.add(user);
+        set.add(user1);
+        list.addAll(set);
         
-        hmForm.setListUsers(list);
+        for (int i = 0; i < list.size(); i ++){
+            
+            System.out.println(list.get(i).getName());
+        }
+        
     }
     
 }

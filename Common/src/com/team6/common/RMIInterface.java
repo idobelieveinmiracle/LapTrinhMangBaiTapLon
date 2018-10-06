@@ -7,6 +7,7 @@ package com.team6.common;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 
 /**
  *
@@ -17,4 +18,6 @@ public interface RMIInterface extends Remote{
     public boolean setUser(User user) throws RemoteException;
     public boolean insertUser(User user) throws RemoteException;
     public User checkLogin(String username, String password) throws RemoteException; 
+    public void logOut(String username) throws RemoteException;
+    public ArrayList<User> getAllOnlineUsers() throws RemoteException;
 }

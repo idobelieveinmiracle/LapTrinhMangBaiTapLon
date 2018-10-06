@@ -1,5 +1,5 @@
 {
 	"rmiPort":"1997",
-	"rmiHost":"localhost",
+	"rmiHostName":"localhost",
 	"rmiService":"rmiService"
 }

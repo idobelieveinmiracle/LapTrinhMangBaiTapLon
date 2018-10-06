@@ -5,6 +5,8 @@
  */
 package com.team6.runs;
 
+import com.team6.common.User;
+import com.team6.views.HomeForm;
 import com.team6.views.SignUpForm;
 
 /**
@@ -18,7 +20,9 @@ public class TestRun {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        new SignUpForm().setVisible(true);
+        HomeForm hmForm = new HomeForm();
+        hmForm.setUser(new User("ztr", "123", "Nguyen Quoc Hung", 1000, 0));
+        hmForm.setVisible(true);
     }
     
 }

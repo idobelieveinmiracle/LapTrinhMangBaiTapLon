@@ -22,20 +22,7 @@ public class TestRun {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        User user = new User("abc", "asasdc", "aasdsasd", 1, 1);
-        User user1 = new User("abc", "asasdddddd", "assdasaaaad", 1, 1);
         
-        HashSet<User> set = new HashSet<>();
-        ArrayList<User> list = new ArrayList<>();
-        
-        set.add(user);
-        set.add(user1);
-        list.addAll(set);
-        
-        for (int i = 0; i < list.size(); i ++){
-            
-            System.out.println(list.get(i).getName());
-        }
         
     }
     

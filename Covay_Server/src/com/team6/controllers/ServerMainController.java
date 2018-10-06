@@ -40,6 +40,8 @@ public class ServerMainController extends UnicastRemoteObject implements RMIInte
     private String rmiService;
     private Connection conn;
     
+    private int udpPort;
+    
     private HashSet<User> setOnlineUsers;
     
     public ServerMainController() throws RemoteException{ 

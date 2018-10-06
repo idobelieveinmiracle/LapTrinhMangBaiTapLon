@@ -36,9 +36,11 @@ public class HomeForm extends JFrame{
     private DefaultTableModel mdlListUsers;
     
     private JPanel changeInfoContent;
+    private JPanel listControllerContent;
     private JButton btnInvite;
     private JButton btnChangeInfo;
     private JButton btnChangePassword;
+    private JButton btnResetList;
     
     private GridBagConstraints c;
 
@@ -67,11 +69,9 @@ public class HomeForm extends JFrame{
         
         c.gridy = 2;
         content.add(scrListUsers, c);
-        
-        c.fill = GridBagConstraints.NONE;
-        c.anchor = GridBagConstraints.CENTER;
+                
         c.gridy = 3;
-        content.add(btnInvite, c);
+        content.add(listControllerContent, c);
         
         this.pack();
         this.setResizable(false);
@@ -141,9 +141,11 @@ public class HomeForm extends JFrame{
     
     private void setButtonContent(){        
         changeInfoContent = new JPanel(new GridBagLayout());
+        listControllerContent = new JPanel(new GridBagLayout());
         btnInvite = new JButton("Invite");
         btnChangeInfo = new JButton("Change Information");
         btnChangePassword = new JButton("Change Password");   
+        btnResetList = new JButton("Reset List");
         
         c = new GridBagConstraints();
         
@@ -156,6 +158,11 @@ public class HomeForm extends JFrame{
         c.gridx = 1;
         changeInfoContent.add(btnChangePassword, c);
         
+        c.gridx = 0;
+        listControllerContent.add(btnInvite, c);
+        
+        c.gridx = 1;
+        listControllerContent.add(btnResetList, c);
         
     }
     
@@ -189,11 +196,16 @@ public class HomeForm extends JFrame{
     public JButton getBtnChangePassword() {
         return btnChangePassword;
     }
+
+    public JButton getBtnResetList() {
+        return btnResetList;
+    }
     
     public void addHomeFormActionListener(ActionListener log){
         btnChangeInfo.addActionListener(log);
         btnInvite.addActionListener(log);
         btnChangePassword.addActionListener(log);
+        btnResetList.addActionListener(log);
     }
     
 }

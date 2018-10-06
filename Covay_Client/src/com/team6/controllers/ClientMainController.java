@@ -173,6 +173,15 @@ public class ClientMainController {
                     JOptionPane.showMessageDialog(signupForm, "Cậu nhập sai mật khẩu hoặc cậu nhập thiếu thông tin nào đó");
                 }
             }
+            
+            if (e.getSource().equals(homeForm.getBtnResetList())){
+                try {
+                    homeForm.setListUsers(rmiServer.getAllOnlineUsers(), getUser().getUsername());
+                } catch (RemoteException ex) {
+                    JOptionPane.showMessageDialog(homeForm, "Có gì đó sai sai -.-");
+                    Logger.getLogger(ClientMainController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
         }
         
     }

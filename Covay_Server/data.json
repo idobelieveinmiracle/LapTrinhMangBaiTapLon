@@ -4,6 +4,8 @@
     
 	"rmiAddress":"localhost",
     
-	"rmiService":"rmiService"
+	"rmiService":"rmiService",
 
+	"tcpPort":"1998",
+	"updPort":"1999"
 }

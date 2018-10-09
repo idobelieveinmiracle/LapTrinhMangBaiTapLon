@@ -17,6 +17,7 @@ import java.awt.event.WindowEvent;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.Socket;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -47,6 +48,9 @@ public class ClientMainController {
     private String rmiHostName;
     private int rmiPort;
     private String rmiService;
+    
+    private int tcpPort;
+    private Socket tcpSocket;
     
     public ClientMainController() {
         initVariables();
@@ -97,6 +101,7 @@ public class ClientMainController {
             
             JSONObject jsonObject = (JSONObject) obj;
             
+            tcpPort = Integer.parseInt((String) jsonObject.get("tcpPort"));
             rmiPort =Integer.valueOf((String)jsonObject.get("rmiPort"));
             rmiHostName = (String) jsonObject.get("rmiAddress");
             rmiService = (String) jsonObject.get("rmiService");

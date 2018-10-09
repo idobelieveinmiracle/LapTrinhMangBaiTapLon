@@ -8,6 +8,7 @@ package com.team6.controllers;
 import com.team6.common.RMIInterface;
 import com.team6.common.User;
 import com.team6.models.HandleLoginThread;
+import com.team6.models.IODataCollection;
 import com.team6.models.UserData;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -52,7 +53,7 @@ public class ServerMainController extends UnicastRemoteObject implements RMIInte
     private int tcpPort;
     private ServerSocket tcpServerSocket;
     
-    private HashMap<User, Socket> mapOnlineUsers;
+    private HashMap<User, IODataCollection> mapOnlineUsers;
     
     private HandleLoginThread handleLoginThread;
     
@@ -225,9 +226,11 @@ public class ServerMainController extends UnicastRemoteObject implements RMIInte
     public void logOut(String username) throws RemoteException {
         User user = new User();
         user.setUsername(username);
-        Socket socket = mapOnlineUsers.get(user);
+        IODataCollection ioData = mapOnlineUsers.get(user);
         try {
-            socket.close();
+            ioData.getOis().close();
+            ioData.getOos().close();
+            ioData.getSocket().close();
         } catch (IOException ex) {
             Logger.getLogger(ServerMainController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -246,6 +249,11 @@ public class ServerMainController extends UnicastRemoteObject implements RMIInte
         }
         
         return list;
+    }
+
+    @Override
+    public void invite(String username) throws RemoteException {
+        
     }
     
 }

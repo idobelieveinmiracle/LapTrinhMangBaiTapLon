@@ -12,7 +12,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketException;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,10 +21,10 @@ import java.util.logging.Logger;
  * @author Quoc Hung
  */
 public class HandleLoginThread extends Thread{
-    private HashMap<User, Socket> mapOnlineUsers;
+    private HashMap<User, IODataCollection> mapOnlineUsers;
     private ServerSocket tcpServerSocket;
 
-    public HandleLoginThread(HashMap<User, Socket> mapOnlineUsers, ServerSocket tcpServerSocket) {
+    public HandleLoginThread(HashMap<User, IODataCollection> mapOnlineUsers, ServerSocket tcpServerSocket) {
         this.mapOnlineUsers = mapOnlineUsers;
         this.tcpServerSocket = tcpServerSocket;
     }
@@ -55,7 +54,7 @@ public class HandleLoginThread extends Thread{
                 System.out.println(message.getTitle());
                 
                 if (message.getTitle().equals("Login")){
-                    mapOnlineUsers.put((User) message.getContent(), clientSocket);
+                    mapOnlineUsers.put((User) message.getContent(), new IODataCollection(clientSocket, oos, ois));
                 }
                 
             } catch (IOException ex) {

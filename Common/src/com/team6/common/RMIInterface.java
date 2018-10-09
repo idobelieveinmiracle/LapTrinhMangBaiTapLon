@@ -20,4 +20,5 @@ public interface RMIInterface extends Remote{
     public User checkLogin(String username, String password) throws RemoteException; 
     public void logOut(String username) throws RemoteException;
     public ArrayList<User> getAllOnlineUsers() throws RemoteException;
+    public void invite(String username) throws RemoteException;
 }

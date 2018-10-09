@@ -12,6 +12,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.net.Socket;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -22,8 +23,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.simple.JSONObject;
@@ -48,10 +51,10 @@ public class ServerMainController extends UnicastRemoteObject implements RMIInte
     private int tcpPort;
     private ServerSocket tcpServerSocket;
     
-    private HashSet<UserData> setOnlineUsers;
+    private HashMap<User, Socket> mapOnlineUsers;
     
     public ServerMainController() throws RemoteException{ 
-        setOnlineUsers = new HashSet<>();
+        mapOnlineUsers = new HashMap<>();
         initVariables();
         createRegistry();
         initConnection();
@@ -187,7 +190,7 @@ public class ServerMainController extends UnicastRemoteObject implements RMIInte
                 user.setPassword(password);
                 user.setName(rs.getString(3));
                 user.setScore(rs.getInt(4));
-                if (setOnlineUsers.add(new UserData(user, null))) return user;
+                if (!mapOnlineUsers.containsKey(user)) return user;
                 else return null;
             }
         } catch (SQLException ex) {
@@ -199,17 +202,19 @@ public class ServerMainController extends UnicastRemoteObject implements RMIInte
 
     @Override
     public void logOut(String username) throws RemoteException {
-        setOnlineUsers.remove(new UserData(new User(username, "", "", 0, 0),null));
+        mapOnlineUsers.remove(new User(username,"","",0,0));
     }
 
     @Override
     public ArrayList<User> getAllOnlineUsers() throws RemoteException {
         ArrayList<User> list = new ArrayList<>();
         
-        Iterator<UserData> iter = setOnlineUsers.iterator();
+        Iterator iter = mapOnlineUsers.entrySet().iterator();
         
         while (iter.hasNext()){
-            list.add(iter.next().getUserInfo());
+            Map.Entry pair = (Map.Entry)iter.next();
+            User user = (User) pair.getKey();
+            list.add(user);
         }
         
         return list;

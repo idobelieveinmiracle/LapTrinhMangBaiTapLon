@@ -47,13 +47,15 @@ public class TCPThread extends Thread{
     
     @Override
     public void run(){
-        
+        System.out.println("Started TCP Thread");
         ObjectOutputStream oos = null;
         ObjectInputStream ois = null;
         try {
-            oos = new ObjectOutputStream(socket.getOutputStream());
             ois = new ObjectInputStream(socket.getInputStream());
-            
+            oos = new ObjectOutputStream(socket.getOutputStream());
+            System.out.println("created oos, ois");
+            oos.writeObject(new Message("Login", user));
+            System.out.println("Sent message Login with username: "+user.getUsername());
             while (true){
                 Object o = ois.readObject();
                 

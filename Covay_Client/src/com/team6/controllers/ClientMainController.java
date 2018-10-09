@@ -5,8 +5,10 @@
  */
 package com.team6.controllers;
 
+import com.team6.common.Message;
 import com.team6.common.RMIInterface;
 import com.team6.common.User;
+import com.team6.models.TCPThread;
 import com.team6.views.HomeForm;
 import com.team6.views.LoginForm;
 import com.team6.views.SignUpForm;
@@ -17,6 +19,8 @@ import java.awt.event.WindowEvent;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -52,6 +56,8 @@ public class ClientMainController {
     private int tcpPort;
     private Socket tcpSocket;
     
+    private TCPThread listeningThread;
+    
     public ClientMainController() {
         initVariables();
         initRMI();
@@ -73,7 +79,10 @@ public class ClientMainController {
             public void windowClosing(WindowEvent e) {
                 try {
                     rmiServer.logOut(user.getUsername());
+                    tcpSocket.close();
                 } catch (RemoteException ex) {
+                    Logger.getLogger(ClientMainController.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex) {
                     Logger.getLogger(ClientMainController.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
@@ -122,6 +131,20 @@ public class ClientMainController {
         return this.user;
     }
     
+    public void startListeningThread(){
+        try {
+            tcpSocket = new Socket("localhost", tcpPort);
+            
+            ObjectOutputStream oos = new ObjectOutputStream(tcpSocket.getOutputStream());
+            ObjectInputStream ois = new ObjectInputStream(tcpSocket.getInputStream());
+            
+            oos.writeObject(new Message("Login", user));
+            
+        } catch (IOException ex) {
+            Logger.getLogger(ClientMainController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     private class MainControllerActionListener implements ActionListener{
 
         @Override
@@ -131,17 +154,23 @@ public class ClientMainController {
                 String password = loginForm.getPassword();
                 if (!username.equals("") && !password.equals("")){
                     try {
-                        User user = rmiServer.checkLogin(username, password);
+                        user = rmiServer.checkLogin(username, password);
                         
                         if (user != null){
-                            setUser(user);
                             loginForm.setVisible(false);
                             homeForm.setUser(user);
                             homeForm.setListUsers(rmiServer.getAllOnlineUsers(), user.getUsername());
                             homeForm.setVisible(true);
+                            
+                            tcpSocket = new Socket("localhost", tcpPort);
+                            
+                            System.out.println("Socket: "+tcpSocket.getLocalAddress());
+                            new TCPThread(homeForm, user, tcpSocket).start();
                         } else JOptionPane.showMessageDialog(loginForm, "Cậu đã nhập sai tên đăng nhập hoặc mật khẩu");
                     } catch (RemoteException ex) {
                         JOptionPane.showMessageDialog(loginForm, "Tớ cảm thấy có gì đó sai sai");
+                        Logger.getLogger(ClientMainController.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (IOException ex) {
                         Logger.getLogger(ClientMainController.class.getName()).log(Level.SEVERE, null, ex);
                     }
                         

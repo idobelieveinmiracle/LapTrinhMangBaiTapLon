@@ -7,6 +7,7 @@ package com.team6.controllers;
 
 import com.team6.common.RMIInterface;
 import com.team6.common.User;
+import com.team6.models.HandleLoginThread;
 import com.team6.models.UserData;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -53,11 +54,20 @@ public class ServerMainController extends UnicastRemoteObject implements RMIInte
     
     private HashMap<User, Socket> mapOnlineUsers;
     
+    private HandleLoginThread handleLoginThread;
+    
     public ServerMainController() throws RemoteException{ 
         mapOnlineUsers = new HashMap<>();
         initVariables();
         createRegistry();
+        createTCPServer();
         initConnection();
+        createHandleLoginThread();
+    }
+    
+    private void createHandleLoginThread(){
+        handleLoginThread = new HandleLoginThread(mapOnlineUsers, tcpServerSocket);
+        handleLoginThread.run();
     }
     
     private void initVariables(){
@@ -86,6 +96,15 @@ public class ServerMainController extends UnicastRemoteObject implements RMIInte
     private void createRegistry() throws RemoteException{
         registry = LocateRegistry.createRegistry(rmiPort);
         registry.rebind(rmiService, this);
+    }
+    
+    private void createTCPServer(){
+        try {
+            tcpServerSocket = new ServerSocket(tcpPort);
+            System.out.println("Created TCP server");
+        } catch (IOException ex) {
+            Logger.getLogger(ServerMainController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     private void initConnection(){
@@ -190,7 +209,9 @@ public class ServerMainController extends UnicastRemoteObject implements RMIInte
                 user.setPassword(password);
                 user.setName(rs.getString(3));
                 user.setScore(rs.getInt(4));
-                if (!mapOnlineUsers.containsKey(user)) return user;
+                if (!mapOnlineUsers.containsKey(user)) {
+                    return user;
+                }
                 else return null;
             }
         } catch (SQLException ex) {
@@ -202,17 +223,22 @@ public class ServerMainController extends UnicastRemoteObject implements RMIInte
 
     @Override
     public void logOut(String username) throws RemoteException {
-        mapOnlineUsers.remove(new User(username,"","",0,0));
+        User user = new User();
+        user.setUsername(username);
+        Socket socket = mapOnlineUsers.get(user);
+        try {
+            socket.close();
+        } catch (IOException ex) {
+            Logger.getLogger(ServerMainController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        mapOnlineUsers.remove(user);
     }
 
     @Override
     public ArrayList<User> getAllOnlineUsers() throws RemoteException {
         ArrayList<User> list = new ArrayList<>();
         
-        Iterator iter = mapOnlineUsers.entrySet().iterator();
-        
-        while (iter.hasNext()){
-            Map.Entry pair = (Map.Entry)iter.next();
+        for (Map.Entry pair : mapOnlineUsers.entrySet()) {
             User user = (User) pair.getKey();
             list.add(user);
         }

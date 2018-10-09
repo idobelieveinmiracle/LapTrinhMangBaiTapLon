@@ -208,4 +208,12 @@ public class HomeForm extends JFrame{
         btnResetList.addActionListener(log);
     }
     
+    public String getUsernameSelected(){
+        int rowSelected = tblListUsers.getSelectedRow();
+        if(rowSelected < 0) return null;
+        String username = mdlListUsers.getValueAt(rowSelected, 0).toString();
+        
+        return username;
+    }
+    
 }

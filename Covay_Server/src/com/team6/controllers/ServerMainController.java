@@ -5,6 +5,7 @@
  */
 package com.team6.controllers;
 
+import com.team6.common.Message;
 import com.team6.common.RMIInterface;
 import com.team6.common.User;
 import com.team6.models.HandleLoginThread;
@@ -13,6 +14,8 @@ import com.team6.models.UserData;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.rmi.RemoteException;
@@ -253,7 +256,28 @@ public class ServerMainController extends UnicastRemoteObject implements RMIInte
 
     @Override
     public void invite(String username) throws RemoteException {
+        IODataCollection userIOData = mapOnlineUsers.get(new User(username, "", "", 0, 0));
+        System.out.println("Got invite to "+username);
         
+        ObjectOutputStream oos = userIOData.getOos();
+        ObjectInputStream ois = userIOData.getOis();
+        
+        try {
+            oos.writeObject(new Message("Invite", null));
+            
+            Object o = ois.readObject();
+            
+            if (o instanceof Message){
+                Message message = (Message) o;
+                
+                if (message.getTitle().equals("AC")) System.out.println("User accepted");
+                else System.out.println("User declided");
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(ServerMainController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(ServerMainController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
 }

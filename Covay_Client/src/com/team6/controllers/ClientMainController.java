@@ -216,6 +216,19 @@ public class ClientMainController {
                     Logger.getLogger(ClientMainController.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
+            
+            if (e.getSource().equals(homeForm.getBtnInvite())){
+                String username = homeForm.getUsernameSelected();
+                
+                if(username == null) JOptionPane.showMessageDialog(homeForm, "Cậu chưa chọn đối thủ, hãy chọn một người");
+                else {
+                    try {
+                        rmiServer.invite(username);
+                    } catch (RemoteException ex) {
+                        Logger.getLogger(ClientMainController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
         }
         
     }

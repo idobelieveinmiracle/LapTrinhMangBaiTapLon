@@ -12,6 +12,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -34,13 +35,19 @@ public class HandleLoginThread extends Thread{
         
         System.out.println("Started handling TCP login");
         
-        while (true) {            
+        while (true) {   
+            ObjectInputStream ois = null;
+            ObjectOutputStream oos = null;
             try {
                 Socket clientSocket = tcpServerSocket.accept();
+                System.out.println("Client connected");
                 
-                ObjectInputStream ois = new ObjectInputStream(clientSocket.getInputStream());
+                oos = new ObjectOutputStream(clientSocket.getOutputStream());
+                ois = new ObjectInputStream(clientSocket.getInputStream());
+                System.out.println("Got input stream");
                 
                 Object o = ois.readObject();
+                
                 if (!(o instanceof Message))continue;
                 
                 Message message = (Message) o;
@@ -52,7 +59,7 @@ public class HandleLoginThread extends Thread{
                 }
                 
             } catch (IOException ex) {
-                Logger.getLogger(HandleLoginThread.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println("Client disconnected");
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(HandleLoginThread.class.getName()).log(Level.SEVERE, null, ex);
             }

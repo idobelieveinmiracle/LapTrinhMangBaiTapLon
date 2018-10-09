@@ -232,6 +232,8 @@ public class ServerMainController extends UnicastRemoteObject implements RMIInte
             Logger.getLogger(ServerMainController.class.getName()).log(Level.SEVERE, null, ex);
         }
         mapOnlineUsers.remove(user);
+        
+        System.out.println(user.getUsername()+" has loged out");
     }
 
     @Override

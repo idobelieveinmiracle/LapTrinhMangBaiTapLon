@@ -10,6 +10,7 @@ import com.team6.common.User;
 import com.team6.views.HomeForm;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -51,13 +52,21 @@ public class TCPThread extends Thread{
         ObjectOutputStream oos = null;
         ObjectInputStream ois = null;
         try {
-            ois = new ObjectInputStream(socket.getInputStream());
             oos = new ObjectOutputStream(socket.getOutputStream());
+            ois = new ObjectInputStream(socket.getInputStream());
             System.out.println("created oos, ois");
+            
             oos.writeObject(new Message("Login", user));
             System.out.println("Sent message Login with username: "+user.getUsername());
+            
             while (true){
-                Object o = ois.readObject();
+                Object o = null;
+                
+                try {
+                    o = ois.readObject();
+                } catch (EOFException e){
+                    break;
+                }
                 
                 if (o instanceof Message){
                     Message message = (Message) o;

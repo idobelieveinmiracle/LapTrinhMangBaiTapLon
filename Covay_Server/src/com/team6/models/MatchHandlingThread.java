@@ -10,5 +10,18 @@ package com.team6.models;
  * @author Quoc Hung
  */
 public class MatchHandlingThread extends Thread{
-    private IODataCollection iODataCollection;
+    private IODataCollection player2;
+    private IODataCollection player1;
+
+    public MatchHandlingThread(IODataCollection player2, IODataCollection player1) {
+        this.player2 = player2;
+        this.player1 = player1;
+    }
+
+    @Override
+    public void run() {
+        
+    }
+    
+    
 }

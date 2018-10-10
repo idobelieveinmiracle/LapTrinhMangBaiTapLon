@@ -20,11 +20,11 @@ import java.util.logging.Logger;
  *
  * @author Quoc Hung
  */
-public class HandleLoginThread extends Thread{
+public class LoginHandlingThread extends Thread{
     private HashMap<User, IODataCollection> mapOnlineUsers;
     private ServerSocket tcpServerSocket;
 
-    public HandleLoginThread(HashMap<User, IODataCollection> mapOnlineUsers, ServerSocket tcpServerSocket) {
+    public LoginHandlingThread(HashMap<User, IODataCollection> mapOnlineUsers, ServerSocket tcpServerSocket) {
         this.mapOnlineUsers = mapOnlineUsers;
         this.tcpServerSocket = tcpServerSocket;
     }
@@ -60,7 +60,7 @@ public class HandleLoginThread extends Thread{
             } catch (IOException ex) {
                 System.out.println("Client disconnected");
             } catch (ClassNotFoundException ex) {
-                Logger.getLogger(HandleLoginThread.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(LoginHandlingThread.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }

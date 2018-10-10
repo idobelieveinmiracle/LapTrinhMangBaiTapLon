@@ -8,7 +8,7 @@ package com.team6.controllers;
 import com.team6.common.Message;
 import com.team6.common.RMIInterface;
 import com.team6.common.User;
-import com.team6.models.HandleLoginThread;
+import com.team6.models.LoginHandlingThread;
 import com.team6.models.IODataCollection;
 import com.team6.models.UserData;
 import java.io.FileNotFoundException;
@@ -58,7 +58,7 @@ public class ServerMainController extends UnicastRemoteObject implements RMIInte
     
     private HashMap<User, IODataCollection> mapOnlineUsers;
     
-    private HandleLoginThread handleLoginThread;
+    private LoginHandlingThread loginHandlingThread;
     
     public ServerMainController() throws RemoteException{ 
         mapOnlineUsers = new HashMap<>();
@@ -70,8 +70,8 @@ public class ServerMainController extends UnicastRemoteObject implements RMIInte
     }
     
     private void createHandleLoginThread(){
-        handleLoginThread = new HandleLoginThread(mapOnlineUsers, tcpServerSocket);
-        handleLoginThread.run();
+        loginHandlingThread = new LoginHandlingThread(mapOnlineUsers, tcpServerSocket);
+        loginHandlingThread.run();
     }
     
     private void initVariables(){

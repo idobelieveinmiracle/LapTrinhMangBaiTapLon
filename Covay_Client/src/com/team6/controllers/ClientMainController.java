@@ -223,7 +223,9 @@ public class ClientMainController {
                 if(username == null) JOptionPane.showMessageDialog(homeForm, "Cậu chưa chọn đối thủ, hãy chọn một người");
                 else {
                     try {
-                        rmiServer.invite(user.getUsername(),username);
+                        if(rmiServer.invite(user.getUsername(),username)){
+                            
+                        } else JOptionPane.showMessageDialog(homeForm, "Bạn ý không đồng ý chơi với cậu :((");
                     } catch (RemoteException ex) {
                         Logger.getLogger(ClientMainController.class.getName()).log(Level.SEVERE, null, ex);
                     }

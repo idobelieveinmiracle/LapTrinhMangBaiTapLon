@@ -10,6 +10,7 @@ import com.team6.common.RMIInterface;
 import com.team6.common.User;
 import com.team6.models.LoginHandlingThread;
 import com.team6.models.IODataCollection;
+import com.team6.models.MatchHandlingThread;
 import com.team6.models.UserData;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -255,32 +256,41 @@ public class ServerMainController extends UnicastRemoteObject implements RMIInte
     }
 
     @Override
-    public void invite(String inviter, String username) throws RemoteException {
-        IODataCollection userIOData = mapOnlineUsers.get(new User(username, "", "", 0, 0));
+    public boolean invite(String inviter, String username) throws RemoteException {
+        IODataCollection player1IO = mapOnlineUsers.get(new User(username, "", "", 0, 0));
+        IODataCollection player2IO = mapOnlineUsers.get(new User(inviter, "", "", 0, 0));
         System.out.println("Got invite to "+username);
         
-        ObjectOutputStream oos = userIOData.getOos();
-        ObjectInputStream ois = userIOData.getOis();
+        ObjectOutputStream oos1 = player1IO.getOos();
+        ObjectInputStream ois1 = player1IO.getOis();
+        
+        ObjectOutputStream oos2 = player2IO.getOos();
         
         try {
-            oos.writeObject(new Message("Invite", inviter));
+            oos1.writeObject(new Message("Invite", inviter));
             
-            Object o = ois.readObject();
+            Object o = ois1.readObject();
             
             if (o instanceof Message){
                 Message message = (Message) o;
                 
                 if (message.getTitle().equals("AC")) {
                     System.out.println("User accepted");
-                    
+                    new MatchHandlingThread(player1IO, player2IO).start();
+                    return true;
                 }
-                else System.out.println("User declided");
+                else {
+                    System.out.println("User declided");
+                    return false;
+                }
             }
         } catch (IOException ex) {
             Logger.getLogger(ServerMainController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(ServerMainController.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+        return false;
     }
     
 }

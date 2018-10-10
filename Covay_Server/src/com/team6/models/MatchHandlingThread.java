@@ -5,21 +5,29 @@
  */
 package com.team6.models;
 
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
 /**
  *
  * @author Quoc Hung
  */
 public class MatchHandlingThread extends Thread{
-    private IODataCollection player2;
-    private IODataCollection player1;
+    private IODataCollection player2IO;
+    private IODataCollection player1IO;
 
-    public MatchHandlingThread(IODataCollection player2, IODataCollection player1) {
-        this.player2 = player2;
-        this.player1 = player1;
+    public MatchHandlingThread(IODataCollection player1, IODataCollection player2) {
+        this.player2IO = player2;
+        this.player1IO = player1;
     }
 
     @Override
     public void run() {
+        ObjectOutputStream player1OutputSteam = player1IO.getOos();
+        ObjectOutputStream player2OutputStram = player2IO.getOos();
+        ObjectInputStream player1InputStream = player2IO.getOis();
+        ObjectInputStream player2InputStream = player2IO.getOis();
+        
         
     }
     

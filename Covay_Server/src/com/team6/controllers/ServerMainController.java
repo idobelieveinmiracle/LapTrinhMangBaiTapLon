@@ -255,7 +255,7 @@ public class ServerMainController extends UnicastRemoteObject implements RMIInte
     }
 
     @Override
-    public void invite(String username) throws RemoteException {
+    public void invite(String inviter, String username) throws RemoteException {
         IODataCollection userIOData = mapOnlineUsers.get(new User(username, "", "", 0, 0));
         System.out.println("Got invite to "+username);
         
@@ -263,14 +263,17 @@ public class ServerMainController extends UnicastRemoteObject implements RMIInte
         ObjectInputStream ois = userIOData.getOis();
         
         try {
-            oos.writeObject(new Message("Invite", null));
+            oos.writeObject(new Message("Invite", inviter));
             
             Object o = ois.readObject();
             
             if (o instanceof Message){
                 Message message = (Message) o;
                 
-                if (message.getTitle().equals("AC")) System.out.println("User accepted");
+                if (message.getTitle().equals("AC")) {
+                    System.out.println("User accepted");
+                    
+                }
                 else System.out.println("User declided");
             }
         } catch (IOException ex) {

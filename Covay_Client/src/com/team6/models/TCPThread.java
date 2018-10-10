@@ -79,7 +79,7 @@ public class TCPThread extends Thread{
                     if (message.getTitle().equals("Invite")){
                         if (JOptionPane.showConfirmDialog(homeForm, 
                                 message.getContent().toString()+
-                                " muốn so tài với cậu, cậu có đồng ý không?")>0){
+                                " muốn so tài với cậu, cậu có đồng ý không?")==0){
                             oos.writeObject(new Message("AC", null));
                             System.out.println("Playing...");
                         } else oos.writeObject(new Message("DE", null));

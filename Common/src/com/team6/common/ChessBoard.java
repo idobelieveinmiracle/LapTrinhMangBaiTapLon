@@ -82,141 +82,147 @@ public class ChessBoard implements Serializable{
         if (turn == BLACK) blackScore ++;
         else whiteScore ++;
         checkMove(new Position(x, y));
+        getScore();
         this.turn = - this.turn;
         this.countTurn ++;
         return true;
     }
     
     public void checkMove(Position p){
-        int side = this.board[p.x][p.y];
-        if (p.y+1<9){
-            if (this.board[p.x][p.y+1] == -side){
-                for (int i = p.y+2; i < 9; i++){
-                    if (board[p.x][i] == side) {
-                        for (int j = p.y+1; j < i; j++){
-                            board[p.x][j] = side;
-                        }
-                        break;
-                    }
-                    if (board[p.x][i] == 0){
-                        break;
-                    }                    
-                }
-            }
-        }
-        if (p.y-1>0){
-            if (this.board[p.x][p.y-1] == -side){
-                for (int i = p.y-2; i >= 0; i--){
-                    if (board[p.x][i] == side) {
-                        for (int j = p.y-1; j > i; j--){
-                            board[p.x][j] = side;
-                        }
-                        break;
-                    }
-                    if (board[p.x][i] == 0){
-                        break;
-                    }                    
-                }
-            }
-        }
-        if (p.x+1<9){
-            if (this.board[p.x+1][p.y] == -side){
-                for (int i = p.x+2; i < 9; i++){
-                    if (board[i][p.y] == side) {
-                        for (int j = p.x+1; j < i; j++){
-                            board[j][p.y] = side;
-                        }
-                        break;
-                    }
-                    if (board[i][p.y] == 0){
-                        break;
-                    }                    
-                }
-            }
-        }
-        if (p.x-1>0){
-            if (this.board[p.x-1][p.y] == -side){
-                for (int i = p.x-2; i > 0; i--){
-                    if (board[i][p.y] == side) {
-                        for (int j = p.x-1; j > i; j--){
-                            board[j][p.y] = side;
-                        }
-                        break;
-                    }
-                    if (board[i][p.y] == 0){
-                        break;
-                    }                    
-                }
-            }
-        }
-        
-        if (p.x+1<9 && p.y+1<9){
-            if (board[p.x+1][p.y+1] == -side){
-                for (int i = 2; i < 9 - p.x && i < 9 - p.y; i++){
-                    if (board[p.x+i][p.y+i] == side) {
-                        for (int j = 0; j < i; j++){
-                            board[p.x+j][p.y+j] = side;
-                        }
-                        break;
-                    }
-                    if (board[p.x+i][p.y+i] == 0){
-                        break;
-                    }  
-                }
-            }
-        }
-        if (p.x-1>0 && p.y+1<9){
-            if (board[p.x-1][p.y+1] == -side){
-                for (int i = 2; p.x-i>0 && p.y+i<9; i++){
-                    if (board[p.x-i][p.y+i] == side) {
-                        for (int j = 0; j < i; j++){
-                            board[p.x-j][p.y+j] = side;
-                        }
-                        break;
-                    }
-                    if (board[p.x-i][p.y+i] == 0){
-                        break;
-                    }  
-                }
-            }
-        }
-        if (p.x-1>0 && p.y-1>0){
-            if (board[p.x-1][p.y-1] == -side){
-                for (int i = 2; p.x-i>0 && p.y-i>0; i++){
-                    if (board[p.x-i][p.y-i] == side) {
-                        for (int j = 0; j < i; j++){
-                            board[p.x-j][p.y-j] = side;
-                        }
-                        break;
-                    }
-                    if (board[p.x-i][p.y-i] == 0){
-                        break;
-                    }  
-                }
-            }
-        }
-        if (p.x+1<9 && p.y-1>0){
-            if (board[p.x+1][p.y-1] == -side){
-                for (int i = 2; p.x+i<9 && p.y-i>0; i++){
-                    if (board[p.x+i][p.y-i] == side) {
-                        for (int j = 0; j < i; j++){
-                            board[p.x+j][p.y-j] = side;
-                        }
-                        break;
-                    }
-                    if (board[p.x+i][p.y-i] == 0){
-                        break;
-                    }  
-                }
-            }
-        }
-        getScore();
-        if(countTurn == 80){
-            getScore();
-            System.out.println("Finished:");
-            System.out.println("Black: "+blackScore);
-            System.out.println("White: "+whiteScore);
-        }
+       int x = p.x;
+       int y = p.y;
+       int side = turn;
+       
+       if (x-1 >= 0){
+           if (board[x-1][y] == -side){
+               for (int i = 2; x-i >= 0; i++ ){
+                   if (board[x-i][y] == side){
+                       for (int j = 1; j < i; j++){
+                           board[x-j][y] = side;
+                       }
+                       break;
+                   } 
+                   if (board[x-i][y] == 0) break;
+               }
+           }
+       }
+       
+       if (y-1 >= 0){
+           if (board[x][y-1] == -side){
+//               System.out.println("eat");
+               for (int i = 2; y-i >= 0; i++ ){
+                   if (board[x][y-i] == side){
+                       for (int j = 1; j < i; j++){
+                           board[x][y-j] = side;
+                       }
+                       break;
+                   } 
+                   if (board[x][y-i] == 0) break;
+               }
+           }
+       }
+       
+       if (x+1 < 9){
+           if (board[x+1][y] == -side){
+//               System.out.println("eat");
+               for (int i = 2; x+i < 9; i++ ){
+                   if (board[x+i][y] == side){
+                       for (int j = 1; j < i; j++){
+                           board[x+j][y] = side;
+                       }
+                       break;
+                   } 
+                   if (board[x+i][y] == 0) break;
+               }
+           }
+       }
+       
+       if (y+1 < 9){
+           if (board[x][y+1] == -side){
+               System.out.println("eat");
+               for (int i = 2; y+i < 9; i++ ){
+                   if (board[x][y+i] == side){
+                       for (int j = 1; j < i; j++){
+                           board[x][y+j] = side;
+                       }
+                       break;
+                   } 
+                   if (board[x][y+i] == 0) break;
+               }
+           }
+       }
+       
+       if (x+1 < 9 && y+1 < 9){
+           if (board[x+1][y+1] == -side){
+//               System.out.println("eat");
+               for (int i = 2; x+i < 9 && y+i < 9; i++){
+                   if (board[x+i][y+i] == side){
+//                       System.out.println("get: (x,y)=="+(x+i)+" "+(y+i));
+                       for (int j = 1; j < i; j++){
+                           board[x+j][y+j] = side;
+                       }
+                       break;
+                   }
+                   if (board[x+i][y+i] == 0){
+                       break;
+                   }
+               }
+           }
+       }
+       
+       if (x+1 < 9 && y-1 >= 0){
+           if (board[x+1][y-1] == -side){
+//               System.out.println("eat");
+               for (int i = 2; x+i < 9 && y-i >= 0; i++){
+                   if (board[x+i][y-i] == side){
+//                       System.out.println("get: (x,y)=="+(x+i)+" "+(y-i));
+                       for (int j = 1; j < i; j++){
+                           board[x+j][y-j] = side;
+                       }
+                       break;
+                   }
+                   if (board[x+i][y-i] == 0){
+                       break;
+                   }
+               }
+           }
+       }
+       
+       if (x-1 >= 0 && y-1 >= 0){
+           if (board[x-1][y-1] == -side){
+//               System.out.println("eat");
+               for (int i = 2; x-i >=0 && y-i >= 0; i++){
+                   if (board[x-i][y-i] == side){
+//                       System.out.println("get: (x,y)=="+(x-i)+" "+(y-i));
+                       for (int j = 1; j < i; j++){
+                           board[x-j][y-j] = side;
+                       }
+                       break;
+                   }
+                   if (board[x-i][y-i] == 0){
+                       break;
+                   }
+               }
+           }
+       }
+       
+       if (x-1 >= 0 && y+1 < 9){
+           if (board[x-1][y+1] == -side){
+//               System.out.println("eat");
+               for (int i = 2; x-i >=0 && y+i < 9; i++){
+                   if (board[x-i][y+i] == side){
+//                       System.out.println("get: (x,y)=="+(x-i)+" "+(y-i));
+                       for (int j = 1; j < i; j++){
+                           board[x-j][y+j] = side;
+                       }
+                       break;
+                   }
+                   if (board[x-i][y+i] == 0){
+                       break;
+                   }
+               }
+           }
+       }
     }
     
     public void getScore(){

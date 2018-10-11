@@ -227,7 +227,7 @@ public class ClientMainController {
                 else {
                     try {
                         if(rmiServer.invite(user.getUsername(),username)){
-                            
+//                            homeForm.setVisible(false);
                         } else JOptionPane.showMessageDialog(homeForm, "Bạn ý không đồng ý chơi với cậu :((");
                     } catch (RemoteException ex) {
                         Logger.getLogger(ClientMainController.class.getName()).log(Level.SEVERE, null, ex);

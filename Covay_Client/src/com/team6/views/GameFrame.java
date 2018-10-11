@@ -17,11 +17,9 @@ import javax.swing.JPanel;
  */
 public class GameFrame extends JFrame{
     private GamePanel gamePanel;
-    private ChessBoard chessBoard;
     
-    public GameFrame() {
-        chessBoard = new ChessBoard();
-        gamePanel = new GamePanel(chessBoard);
+    public GameFrame(GamePanel gamePanel) {
+        this.gamePanel = gamePanel;
         
         JPanel content = (JPanel) this.getContentPane();
         

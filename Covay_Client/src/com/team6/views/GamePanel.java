@@ -21,11 +21,20 @@ public class GamePanel extends JPanel implements MouseListener{
     
     private ChessBoard chessBoard;
     private int z = 40;
+    private int side;
     
     public GamePanel(ChessBoard chessBoard){
         this.setSize(400, 400);
         this.chessBoard = chessBoard;
-        
+        this.side = 0;
+    }
+
+    public int getSide() {
+        return side;
+    }
+
+    public void setSide(int side) {
+        this.side = side;
     }
 
     public ChessBoard getChessBoard() {
@@ -92,11 +101,14 @@ public class GamePanel extends JPanel implements MouseListener{
         }
         
         System.out.println("Clicked");
-        if(chessBoard.move(b, a)) { 
-            this.repaint();
-            System.out.println(x+" "+ y+" "+a+" "+b);
-//            chessBoard.printBoard();
+        if (this.side == chessBoard.getTurn()){
+            if(chessBoard.move(b, a)) { 
+                this.repaint();
+                System.out.println(x+" "+ y+" "+a+" "+b);
+    //            chessBoard.printBoard();
+            }
         }
+            
     }
     
 

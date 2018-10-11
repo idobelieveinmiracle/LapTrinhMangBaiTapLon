@@ -13,14 +13,15 @@ import java.io.Serializable;
  */
 public class ChessBoard implements Serializable{
     
-    public static final int BLACK = 1;
-    public static final int WHITE = -1;
+    public static final int BLACK = -1;
+    public static final int WHITE = 1;
     
     //  So vi tri cac quan tren ban co, 1 la quan den, 2 la quan trang, 0 la chua co quan
     private int[][] board;
     private int blackScore;
     private int whiteScore;
     private int countTurn;
+    private int side;
     
     //  Luot di = 1 thi ben trang di, = 2 thi ben den di
     private int turn;
@@ -35,6 +36,15 @@ public class ChessBoard implements Serializable{
         this.countTurn = 0;
         this.blackScore = 0;
         this.whiteScore = 0;
+        this.side = 0;
+    }
+
+    public int getSide() {
+        return side;
+    }
+
+    public void setSide(int side) {
+        this.side = side;
     }
 
     public int getBlackScore() {
@@ -85,6 +95,7 @@ public class ChessBoard implements Serializable{
         getScore();
         this.turn = - this.turn;
         this.countTurn ++;
+        System.out.println("Moved");
         return true;
     }
     

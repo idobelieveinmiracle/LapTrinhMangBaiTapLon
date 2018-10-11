@@ -116,10 +116,7 @@ public class TCPThread extends Thread{
                             
                             while (true){                                
                                 chessBoard = gamePanel.getChessBoard();
-                                System.out.println("Player 1 is running..."+chessBoard.getTurn());
                                 if (chessBoard.getTurn() == ChessBoard.BLACK){
-                                    System.out.println("Turn: "+chessBoard.getTurn());
-                                    
                                     oos.writeObject(new Message("Move", chessBoard));
                                     System.out.println("Sent move player 1 reuqest to server");
                                     
@@ -127,6 +124,20 @@ public class TCPThread extends Thread{
                                     if (player1RecievedMessage.getTitle().equals("Move")){
                                         chessBoard = (ChessBoard) player1RecievedMessage.getContent();
                                         gamePanel.setChessBoard(chessBoard);
+                                    }
+                                    
+                                    if (player1RecievedMessage.getTitle().equals("Result")){
+                                        if (player1RecievedMessage.getContent().equals("WIN")){
+                                            homeForm.plusScore();
+                                            JOptionPane.showMessageDialog(gameFrame, "Cậu thắng rồi");
+                                            gameFrame.setVisible(false);
+                                            homeForm.setVisible(true);
+                                        } else {
+                                            JOptionPane.showMessageDialog(gameFrame, "Cậu thua rồi");
+                                            gameFrame.setVisible(false);
+                                            homeForm.setVisible(true);
+                                        }
+                                        break;
                                     }
                                 }
                                 
@@ -162,32 +173,54 @@ public class TCPThread extends Thread{
                                 gamePanel.setChessBoard(chessBoard);
                             }
                             
-                            while (true){
-                                chessBoard = gamePanel.getChessBoard();
-                                System.out.println("Player 2 is running..."+chessBoard.getTurn());
-                                if (chessBoard.getTurn() == ChessBoard.WHITE){
-                                    oos.writeObject(new Message("Move", chessBoard));
-                                    System.out.println("Sent move player 2 reuqest to server");
-                                    
-                                    Message player2RecievedMessage = (Message) ois.readObject();
-                                    if (player2RecievedMessage.getTitle().equals("Move")){
-                                        chessBoard = (ChessBoard) player2RecievedMessage.getContent();
-                                        gamePanel.setChessBoard(chessBoard);
-                                    }
+                            if (player2RecievedMessage1.getTitle().equals("Result")){
+                                if (player2RecievedMessage1.getContent().equals("WIN")){
+                                    homeForm.plusScore();
+                                    JOptionPane.showMessageDialog(gameFrame, "Cậu thắng rồi");
+                                    gameFrame.setVisible(false);
+                                    homeForm.setVisible(true);
                                 }
-                                
-                                long deltaTime = System.nanoTime() - beginTime;
-                                sleepTime = period - deltaTime;
+                            }else{
+                                while (true){
+                                    chessBoard = gamePanel.getChessBoard();
+                                    if (chessBoard.getTurn() == ChessBoard.WHITE){
+                                        oos.writeObject(new Message("Move", chessBoard));
+                                        System.out.println("Sent move player 2 reuqest to server");
 
-                                try {
-                                    if(sleepTime > 0)
-                                        Thread.sleep(sleepTime/1000000);
-                                    else Thread.sleep(period/2000000);
-                                } catch (InterruptedException ex) {
+                                        Message player2RecievedMessage = (Message) ois.readObject();
+                                        if (player2RecievedMessage.getTitle().equals("Move")){
+                                            chessBoard = (ChessBoard) player2RecievedMessage.getContent();
+                                            gamePanel.setChessBoard(chessBoard);
+                                        }
 
-                                }            
-                                beginTime = System.nanoTime();
-                            }
+                                        if (player2RecievedMessage.getTitle().equals("Result")){
+                                            if (player2RecievedMessage.getContent().equals("WIN")){
+                                            homeForm.plusScore();
+                                            JOptionPane.showMessageDialog(gameFrame, "Cậu thắng rồi");
+                                            gameFrame.setVisible(false);
+                                            homeForm.setVisible(true);
+                                        } else {
+                                            JOptionPane.showMessageDialog(gameFrame, "Cậu thua rồi");
+                                            gameFrame.setVisible(false);
+                                            homeForm.setVisible(true);
+                                        }
+                                            break;
+                                        }
+                                    }
+
+                                    long deltaTime = System.nanoTime() - beginTime;
+                                    sleepTime = period - deltaTime;
+
+                                    try {
+                                        if(sleepTime > 0)
+                                            Thread.sleep(sleepTime/1000000);
+                                        else Thread.sleep(period/2000000);
+                                    } catch (InterruptedException ex) {
+
+                                    }            
+                                    beginTime = System.nanoTime();
+                                }
+                            }    
                         }
                     }
                 }

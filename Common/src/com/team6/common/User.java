@@ -75,7 +75,7 @@ public class User implements Serializable{
         this.username = "";
         this.password = "";
         this.name = "";
-        this.score = 1500;
+        this.score = 0;
         this.status = 0;
     }
 

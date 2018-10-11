@@ -7,9 +7,14 @@ package com.team6.models;
 
 import com.team6.common.ChessBoard;
 import com.team6.common.Message;
+import com.team6.common.User;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,11 +25,19 @@ import java.util.logging.Logger;
 public class MatchHandlingThread extends Thread{
     private IODataCollection player2IO;
     private IODataCollection player1IO;
+    private String username1;
+    private String username2;
+    private Connection conn;
 
-    public MatchHandlingThread(IODataCollection player1, IODataCollection player2) {
-        this.player2IO = player2;
-        this.player1IO = player1;
+    public MatchHandlingThread(IODataCollection player2IO, IODataCollection player1IO, String username1, String username2, Connection conn) {
+        this.player2IO = player2IO;
+        this.player1IO = player1IO;
+        this.username1 = username1;
+        this.username2 = username2;
+        this.conn = conn;
     }
+
+    
 
     @Override
     public void run() {
@@ -50,26 +63,54 @@ public class MatchHandlingThread extends Thread{
                     if (mess1.getTitle().equals("Move")){
                         System.out.println("Received Move Request of player 1");
                         ChessBoard chessBoard = (ChessBoard) mess1.getContent();
+                        
+                        if (chessBoard.getCountTurn()== 81){
+                            if (chessBoard.getBlackScore()>40){
+                                updateResult(username2);
+                                player1OutputStream.writeObject(new Message("Result", "LOSE"));
+                                player2OutputStream.writeObject(new Message("Result", "WIN"));
+                            } else {
+                                updateResult(username1);                                
+                                player2OutputStream.writeObject(new Message("Result", "LOSE"));
+                                player1OutputStream.writeObject(new Message("Result", "WIN"));
+                            }
+                            break;
+                        }
+                        
                         player2OutputStream.writeObject(new Message("Move", chessBoard));
                         System.out.println("Sent Move response to player 2");
                     }
-                    else if (mess1.getTitle().equals("Result")){
+                    else if (mess1.getTitle().equals("Crash")){
                         
                     }
                 }
                 
-                Object o2 = player2InputStream.readObject();
+                o = player2InputStream.readObject();
                 
-                if (o2 instanceof Message){
-                    Message mess2 = (Message) o2;
+                if (o instanceof Message){
+                    Message mess2 = (Message) o;
                     
                     if (mess2.getTitle().equals("Move")){
                         System.out.println("Received Move Request of player 2");
                         ChessBoard chessBoard = (ChessBoard) mess2.getContent();
+                        
+                        if (chessBoard.getCountTurn()== 81){
+                            if (chessBoard.getBlackScore()>40){
+                                updateResult(username2);
+                                player1OutputStream.writeObject(new Message("Result", "LOSE"));
+                                player2OutputStream.writeObject(new Message("Result", "WIN"));
+                            } else {
+                                updateResult(username1);                                
+                                player2OutputStream.writeObject(new Message("Result", "LOSE"));
+                                player1OutputStream.writeObject(new Message("Result", "WIN"));
+                            }
+                            break;
+                        }
+                        
                         player1OutputStream.writeObject(new Message("Move", chessBoard));
                         System.out.println("Sent Move response to player 1");
                     }
-                    else if (mess2.getTitle().equals("Result")){
+                    else if (mess2.getTitle().equals("Crash")){
                         
                     }
                 }
@@ -81,5 +122,28 @@ public class MatchHandlingThread extends Thread{
         }
     }
     
-    
+    private void updateResult(String winnerUsername){
+        String sqlSelect, sqlExec;
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+        int score = 0;
+        sqlSelect = "SELECT score FROM tbl_user WHERE username=?";
+        sqlExec = "UPDATE tbl_user SET score=? WHERE username=?";
+        
+        try {
+            stm = conn.prepareStatement(sqlSelect);
+            stm.setString(1, winnerUsername);
+            rs = stm.executeQuery();
+            rs.next();
+            score = rs.getInt("score");
+            
+            stm = conn.prepareStatement(sqlExec);
+            stm.setInt(1, score+1);
+            stm.setString(2, winnerUsername);
+            stm.executeUpdate();
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(MatchHandlingThread.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 }

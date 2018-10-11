@@ -38,7 +38,6 @@ public class GameFrame extends JFrame{
         content.add(gamePanel, c);
         this.addMouseListener(gamePanel);
         this.pack();
-        this.setDefaultCloseOperation(3);
         this.setLocationRelativeTo(null);
         this.setResizable(false);
     }

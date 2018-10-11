@@ -276,7 +276,7 @@ public class ServerMainController extends UnicastRemoteObject implements RMIInte
                 
                 if (message.getTitle().equals("AC")) {
                     System.out.println("User accepted");
-                    new MatchHandlingThread(player1IO, player2IO).start();
+                    new MatchHandlingThread(player1IO, player2IO, username, inviter, conn).start();
                     return true;
                 }
                 else {

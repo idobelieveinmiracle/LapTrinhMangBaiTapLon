@@ -216,4 +216,10 @@ public class HomeForm extends JFrame{
         return username;
     }
     
+    public void plusScore(){
+        int score = Integer.parseInt(txtScore.getText());
+        score++;
+        txtScore.setText(String.valueOf(score));
+    }
+    
 }

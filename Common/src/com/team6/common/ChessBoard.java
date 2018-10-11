@@ -84,6 +84,10 @@ public class ChessBoard implements Serializable{
         this.turn = turn;
         this.countTurn = 0;
     }
+
+    public int getCountTurn() {
+        return countTurn;
+    }
     
     public boolean move(int x, int y){
         if (! (x>=0 && x <= 8 && y >= 0 && y <= 8) ) return false;
@@ -95,7 +99,6 @@ public class ChessBoard implements Serializable{
         getScore();
         this.turn = - this.turn;
         this.countTurn ++;
-        System.out.println("Moved");
         return true;
     }
     

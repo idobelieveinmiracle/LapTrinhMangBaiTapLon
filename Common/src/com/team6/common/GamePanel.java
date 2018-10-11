@@ -3,9 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.team6.views;
+package com.team6.common;
 
-import com.team6.common.ChessBoard;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -40,6 +39,9 @@ public class GamePanel extends JPanel implements MouseListener{
     @Override
     public void paint(Graphics g){
         Graphics2D g2 = (Graphics2D) g;
+        
+        
+        
         
         g2.setColor(new Color(185, 196, 22));
         g2.fillRect(0, 0, 400, 400);

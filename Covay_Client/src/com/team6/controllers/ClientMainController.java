@@ -5,6 +5,7 @@
  */
 package com.team6.controllers;
 
+import com.team6.common.ChessBoard;
 import com.team6.common.Message;
 import com.team6.common.RMIInterface;
 import com.team6.common.User;
@@ -57,6 +58,8 @@ public class ClientMainController {
     private Socket tcpSocket;
     
     private TCPThread listeningThread;
+    
+    private ChessBoard chessBoard;
     
     public ClientMainController() {
         initVariables();
@@ -200,7 +203,7 @@ public class ClientMainController {
                             loginForm.setVisible(true);
                         } else JOptionPane.showMessageDialog(signupForm, "Trùng tên đăng nhập rồi cậu thử tên đăng nhập khách xem");
                     } catch (RemoteException ex) {
-                        JOptionPane.showMessageDialog(loginForm, "Cậu đã nhập đúng tên đăng nhập hoặc mật khẩu");                        
+                        JOptionPane.showMessageDialog(signupForm, "Có gì đó sai sai -.-");                        
                         Logger.getLogger(ClientMainController.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }else {

@@ -96,13 +96,6 @@ public class ChessBoard implements Serializable{
                         for (int j = p.y+1; j < i; j++){
                             board[p.x][j] = side;
                         }
-                        if (side == BLACK){
-                            blackScore += i - p.y;
-                            whiteScore -= i - p.y;
-                        } else {
-                            blackScore -= i - p.y;
-                            whiteScore += i - p.y;                            
-                        }
                         break;
                     }
                     if (board[p.x][i] == 0){
@@ -117,13 +110,6 @@ public class ChessBoard implements Serializable{
                     if (board[p.x][i] == side) {
                         for (int j = p.y-1; j > i; j--){
                             board[p.x][j] = side;
-                        }
-                        if (side == BLACK){
-                            blackScore += p.y-i;
-                            whiteScore -= p.y-i;
-                        } else {
-                            blackScore -= p.y-i;
-                            whiteScore += p.y-i;                            
                         }
                         break;
                     }
@@ -224,8 +210,7 @@ public class ChessBoard implements Serializable{
                 }
             }
         }
-        System.out.println("count="+countTurn);
-        
+        getScore();
         if(countTurn == 80){
             getScore();
             System.out.println("Finished:");

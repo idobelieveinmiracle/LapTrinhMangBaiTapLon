@@ -11,6 +11,7 @@ import com.team6.common.User;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.SocketException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -55,7 +56,15 @@ public class MatchHandlingThread extends Thread{
         
         while (true){
             try {
-                Object o = player1InputStream.readObject();
+                Object o = null;
+                try{
+                    o = player1InputStream.readObject();
+                } catch (SocketException e){
+                    updateResult(username2);
+//                    player1OutputStream.writeObject(new Message("Result", "LOSE"));
+                    player2OutputStream.writeObject(new Message("Result", "WIN"));
+                    break;
+                }
                 
                 if (o instanceof Message){
                     Message mess1 = (Message) o;
@@ -85,7 +94,14 @@ public class MatchHandlingThread extends Thread{
                     }
                 }
                 
-                o = player2InputStream.readObject();
+                try{
+                    o = player2InputStream.readObject();
+                } catch (SocketException e) {
+                    updateResult(username1);                                
+//                    player2OutputStream.writeObject(new Message("Result", "LOSE"));
+                    player1OutputStream.writeObject(new Message("Result", "WIN"));
+                    break;
+                }
                 
                 if (o instanceof Message){
                     Message mess2 = (Message) o;

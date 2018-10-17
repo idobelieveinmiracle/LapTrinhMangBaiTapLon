@@ -31,7 +31,8 @@ public class TCPThread extends Thread{
     private User user;
     private String enemyName;
     private Socket socket;
-
+    ObjectOutputStream oos = null;
+    ObjectInputStream ois = null;
     public TCPThread(HomeForm homeForm, User user, Socket socket) {
         this.homeForm = homeForm;
         this.user = user;
@@ -52,8 +53,7 @@ public class TCPThread extends Thread{
     @Override
     public void run(){
         System.out.println("Started TCP Thread");
-        ObjectOutputStream oos = null;
-        ObjectInputStream ois = null;
+        
         try {
             oos = new ObjectOutputStream(socket.getOutputStream());
             ois = new ObjectInputStream(socket.getInputStream());
@@ -95,6 +95,11 @@ public class TCPThread extends Thread{
                         gameFrame.addWindowListener(new WindowAdapter() {
                             @Override
                             public void windowClosing(WindowEvent e){
+                                try {
+                                    oos.writeObject(new Message("Crash", null));
+                                } catch (IOException ex) {
+                                    Logger.getLogger(TCPThread.class.getName()).log(Level.SEVERE, null, ex);
+                                }
                                 homeForm.setVisible(true);
                             }
                         });
@@ -114,7 +119,8 @@ public class TCPThread extends Thread{
 
                             beginTime = System.nanoTime();      //nanoTime() là hàm lấy thời gian hệ thống  
                             
-                            while (true){                                
+                            while (true){     
+                                if (!gameFrame.isVisible()) break;
                                 chessBoard = gamePanel.getChessBoard();
                                 if (chessBoard.getTurn() == ChessBoard.BLACK){
                                     oos.writeObject(new Message("Move", chessBoard));
@@ -182,6 +188,7 @@ public class TCPThread extends Thread{
                                 }
                             }else{
                                 while (true){
+                                    if (!gameFrame.isVisible()) break;
                                     chessBoard = gamePanel.getChessBoard();
                                     if (chessBoard.getTurn() == ChessBoard.WHITE){
                                         oos.writeObject(new Message("Move", chessBoard));

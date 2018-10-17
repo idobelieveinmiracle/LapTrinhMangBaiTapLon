@@ -90,7 +90,9 @@ public class MatchHandlingThread extends Thread{
                         System.out.println("Sent Move response to player 2");
                     }
                     else if (mess1.getTitle().equals("Crash")){
-                        
+                        player1OutputStream.writeObject(new Message("Result", "LOSE"));
+                        player2OutputStream.writeObject(new Message("Result", "WIN"));
+                        break;
                     }
                 }
                 
@@ -127,7 +129,9 @@ public class MatchHandlingThread extends Thread{
                         System.out.println("Sent Move response to player 1");
                     }
                     else if (mess2.getTitle().equals("Crash")){
-                        
+                        player1OutputStream.writeObject(new Message("Result", "WIN"));
+                        player2OutputStream.writeObject(new Message("Result", "LOSE"));      
+                        break;
                     }
                 }
             } catch (IOException ex) {

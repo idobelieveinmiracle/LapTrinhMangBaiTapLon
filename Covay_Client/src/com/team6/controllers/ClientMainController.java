@@ -136,7 +136,7 @@ public class ClientMainController {
     
     public void startListeningThread(){
         try {
-            tcpSocket = new Socket("localhost", tcpPort);
+            tcpSocket = new Socket(rmiHostName, tcpPort);
             
             ObjectOutputStream oos = new ObjectOutputStream(tcpSocket.getOutputStream());
             ObjectInputStream ois = new ObjectInputStream(tcpSocket.getInputStream());
@@ -165,7 +165,7 @@ public class ClientMainController {
                             homeForm.setListUsers(rmiServer.getAllOnlineUsers(), user.getUsername());
                             homeForm.setVisible(true);
                             
-                            tcpSocket = new Socket("localhost", tcpPort);
+                            tcpSocket = new Socket(rmiHostName, tcpPort);
                             
                             System.out.println("Socket: "+tcpSocket.getLocalAddress());
                             new TCPThread(homeForm, user, tcpSocket).start();

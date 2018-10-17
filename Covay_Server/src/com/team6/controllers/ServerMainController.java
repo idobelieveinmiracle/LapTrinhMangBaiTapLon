@@ -8,9 +8,7 @@ package com.team6.controllers;
 import com.team6.common.Message;
 import com.team6.common.RMIInterface;
 import com.team6.common.User;
-import com.team6.models.LoginHandlingThread;
 import com.team6.models.IODataCollection;
-import com.team6.models.MatchHandlingThread;
 import com.team6.models.UserData;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -291,6 +289,36 @@ public class ServerMainController extends UnicastRemoteObject implements RMIInte
         }
         
         return false;
+    }
+
+    @Override
+    public boolean changePassword(String username, String password, String oldPassword)throws RemoteException {
+        String query = "UPDATE tbl_user SET password=? WHERE username=? AND password=?";
+        
+        try {
+            PreparedStatement stm = conn.prepareStatement(query);
+            stm.setString(1, password);
+            stm.setString(2, username);
+            stm.setString(3, oldPassword);
+            return stm.executeUpdate() > 0;
+        } catch (SQLException ex) {
+            Logger.getLogger(ServerMainController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+
+    @Override
+    public void changeDisplayName(String username, String name) throws RemoteException{
+        String query = "UPDATE tbl_user SET name=? WHERE username=?";
+        
+        try {
+            PreparedStatement stm = conn.prepareStatement(query);
+            stm.setString(1, name);
+            stm.setString(2, username);
+            stm.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(ServerMainController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
 }

@@ -218,8 +218,12 @@ public class HomeForm extends JFrame{
     
     public void plusScore(){
         int score = Integer.parseInt(txtScore.getText());
-        score++;
+        score += 10;
         txtScore.setText(String.valueOf(score));
+    }
+    
+    public void changeDisplayName(String newName){
+        txtName.setText(newName);
     }
     
 }

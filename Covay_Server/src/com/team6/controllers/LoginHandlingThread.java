@@ -3,10 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.team6.models;
+package com.team6.controllers;
 
 import com.team6.common.Message;
 import com.team6.common.User;
+import com.team6.models.IODataCollection;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;

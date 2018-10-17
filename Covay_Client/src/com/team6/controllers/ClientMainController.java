@@ -9,7 +9,8 @@ import com.team6.common.ChessBoard;
 import com.team6.common.Message;
 import com.team6.common.RMIInterface;
 import com.team6.common.User;
-import com.team6.models.TCPThread;
+import com.team6.views.ChangeInfoForm;
+import com.team6.views.ChangePasswordForm;
 import com.team6.views.HomeForm;
 import com.team6.views.LoginForm;
 import com.team6.views.SignUpForm;
@@ -44,6 +45,8 @@ public class ClientMainController {
     private LoginForm loginForm;
     private SignUpForm signupForm;
     private HomeForm homeForm;
+    private ChangeInfoForm changeInfoForm;
+    private ChangePasswordForm changePasswordForm;
     
     private User user;
     
@@ -71,12 +74,28 @@ public class ClientMainController {
         loginForm = new LoginForm();
         signupForm = new SignUpForm();
         homeForm = new HomeForm();
+        changeInfoForm = new ChangeInfoForm();
+        changePasswordForm = new ChangePasswordForm();
         
+        changeInfoForm.addBtnChangeActionListener(new MainControllerActionListener());
+        changePasswordForm.addBtnChangeActionListener(new MainControllerActionListener());
         signupForm.addBtnSignUpFormActionListener(new MainControllerActionListener());
         loginForm.addBtnsActionListener(new MainControllerActionListener());
         homeForm.addHomeFormActionListener(new MainControllerActionListener());
         
         loginForm.setVisible(true);
+        
+        changeInfoForm.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e){
+                homeForm.setVisible(true);
+            }
+        });
+        
+        changePasswordForm.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e){
+                homeForm.setVisible(true);
+            }
+        });
         
         homeForm.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
@@ -233,6 +252,44 @@ public class ClientMainController {
                         Logger.getLogger(ClientMainController.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
+            }
+            
+            if (e.getSource().equals(homeForm.getBtnChangeInfo())){
+                homeForm.setVisible(false);
+                changeInfoForm.setVisible(true);
+            }
+            
+            if (e.getSource().equals(homeForm.getBtnChangePassword())){
+                homeForm.setVisible(false);
+                changePasswordForm.setVisible(true);
+            }
+            
+            if (e.getSource().equals(changeInfoForm.getBtnChange())){
+                try {
+                    rmiServer.changeDisplayName(user.getUsername(), changeInfoForm.getName());
+                    JOptionPane.showMessageDialog(changeInfoForm, "Cậu đã thay đổi tên hiển thị thành công");
+                    changeInfoForm.setVisible(false);
+                    homeForm.changeDisplayName(changeInfoForm.getName());
+                    homeForm.setVisible(true);
+                } catch (RemoteException ex) {
+                    Logger.getLogger(ClientMainController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+            }
+            
+            if (e.getSource().equals(changePasswordForm.getBtnChange())){
+                String newPassword = changePasswordForm.getNewPassword();
+                if (newPassword != null){
+                    try {
+                        if (rmiServer.changePassword(user.getUsername(), newPassword, changePasswordForm.getOldPassword())){
+                            JOptionPane.showMessageDialog(changePasswordForm, "Đổi mật khẩu thành công");
+                            changePasswordForm.setVisible(false);
+                            homeForm.setVisible(true);
+                        } else JOptionPane.showMessageDialog(changePasswordForm, "Mật khẩu cũ bị sai");
+                    } catch (RemoteException ex) {
+                        Logger.getLogger(ClientMainController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                } else JOptionPane.showMessageDialog(changePasswordForm, "Password nhập lại không trùng khớp");
             }
         }
         

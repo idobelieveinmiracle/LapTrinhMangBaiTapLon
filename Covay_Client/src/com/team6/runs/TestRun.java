@@ -6,10 +6,13 @@
 package com.team6.runs;
 
 import com.team6.common.User;
+import com.team6.views.ChangeInfoForm;
+import com.team6.views.ChangePasswordForm;
 import com.team6.views.HomeForm;
 import com.team6.views.SignUpForm;
 import java.util.ArrayList;
 import java.util.HashSet;
+import javax.swing.JFrame;
 
 /**
  *
@@ -22,7 +25,9 @@ public class TestRun {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        
+        JFrame fr = new ChangePasswordForm();
+        fr.setDefaultCloseOperation(3);
+        fr.setVisible(true);
         
     }
     

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.team6.models;
+package com.team6.controllers;
 
 import com.team6.common.ChessBoard;
 import com.team6.common.Message;

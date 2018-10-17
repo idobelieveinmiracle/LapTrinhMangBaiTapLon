@@ -57,7 +57,7 @@ public class ServerMainController extends UnicastRemoteObject implements RMIInte
     private int tcpPort;
     private ServerSocket tcpServerSocket;
     
-    private HashMap<User, IODataCollection> mapOnlineUsers;
+    private HashMap<String, IODataCollection> mapOnlineUsers;
     
     private LoginHandlingThread loginHandlingThread;
     
@@ -228,9 +228,7 @@ public class ServerMainController extends UnicastRemoteObject implements RMIInte
 
     @Override
     public void logOut(String username) throws RemoteException {
-        User user = new User();
-        user.setUsername(username);
-        IODataCollection ioData = mapOnlineUsers.get(user);
+        IODataCollection ioData = mapOnlineUsers.get(username);
         try {
             ioData.getOis().close();
             ioData.getOos().close();
@@ -238,9 +236,9 @@ public class ServerMainController extends UnicastRemoteObject implements RMIInte
         } catch (IOException ex) {
             Logger.getLogger(ServerMainController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        mapOnlineUsers.remove(user);
+        mapOnlineUsers.remove(username);
         
-        System.out.println(user.getUsername()+" has loged out");
+        System.out.println(username+" has loged out");
     }
 
     @Override
@@ -248,7 +246,7 @@ public class ServerMainController extends UnicastRemoteObject implements RMIInte
         ArrayList<User> list = new ArrayList<>();
         
         for (Map.Entry pair : mapOnlineUsers.entrySet()) {
-            User user = (User) pair.getKey();
+            User user = ((IODataCollection) pair.getValue()).getUser();
             list.add(user);
         }
         
@@ -257,8 +255,8 @@ public class ServerMainController extends UnicastRemoteObject implements RMIInte
 
     @Override
     public boolean invite(String inviter, String username) throws RemoteException {
-        IODataCollection player1IO = mapOnlineUsers.get(new User(username, "", "", 0, 0));
-        IODataCollection player2IO = mapOnlineUsers.get(new User(inviter, "", "", 0, 0));
+        IODataCollection player1IO = mapOnlineUsers.get(username);
+        IODataCollection player2IO = mapOnlineUsers.get(inviter);
         System.out.println("Got invite to "+username);
         
         ObjectOutputStream oos1 = player1IO.getOos();
@@ -276,7 +274,9 @@ public class ServerMainController extends UnicastRemoteObject implements RMIInte
                 
                 if (message.getTitle().equals("AC")) {
                     System.out.println("User accepted");
-                    new MatchHandlingThread(player1IO, player2IO, username, inviter, conn).start();
+                    mapOnlineUsers.get(inviter).getUser().setStatus(User.BUSY);                    
+                    mapOnlineUsers.get(username).getUser().setStatus(User.BUSY);
+                    new MatchHandlingThread(player1IO, player2IO, username, inviter, conn, mapOnlineUsers).start();
                     return true;
                 }
                 else {

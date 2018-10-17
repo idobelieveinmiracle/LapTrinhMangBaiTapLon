@@ -21,10 +21,10 @@ import java.util.logging.Logger;
  * @author Quoc Hung
  */
 public class LoginHandlingThread extends Thread{
-    private HashMap<User, IODataCollection> mapOnlineUsers;
+    private HashMap<String, IODataCollection> mapOnlineUsers;
     private ServerSocket tcpServerSocket;
 
-    public LoginHandlingThread(HashMap<User, IODataCollection> mapOnlineUsers, ServerSocket tcpServerSocket) {
+    public LoginHandlingThread(HashMap<String, IODataCollection> mapOnlineUsers, ServerSocket tcpServerSocket) {
         this.mapOnlineUsers = mapOnlineUsers;
         this.tcpServerSocket = tcpServerSocket;
     }
@@ -54,7 +54,8 @@ public class LoginHandlingThread extends Thread{
                 System.out.println(message.getTitle());
                 
                 if (message.getTitle().equals("Login")){
-                    mapOnlineUsers.put((User) message.getContent(), new IODataCollection(clientSocket, oos, ois));
+                    User user = (User) message.getContent();
+                    mapOnlineUsers.put(user.getUsername(), new IODataCollection(user, clientSocket, oos, ois));
                 }
                 
             } catch (IOException ex) {

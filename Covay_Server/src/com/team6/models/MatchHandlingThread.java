@@ -16,6 +16,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -24,13 +25,15 @@ import java.util.logging.Logger;
  * @author Quoc Hung
  */
 public class MatchHandlingThread extends Thread{
+    private HashMap<String, IODataCollection> mapOnlineUsers;
     private IODataCollection player2IO;
     private IODataCollection player1IO;
     private String username1;
     private String username2;
     private Connection conn;
 
-    public MatchHandlingThread(IODataCollection player2IO, IODataCollection player1IO, String username1, String username2, Connection conn) {
+    public MatchHandlingThread(IODataCollection player2IO, IODataCollection player1IO, String username1, String username2, Connection conn, HashMap<String, IODataCollection> mapOnlineUser) {
+        this.mapOnlineUsers = mapOnlineUser;
         this.player2IO = player2IO;
         this.player1IO = player1IO;
         this.username1 = username1;
@@ -140,6 +143,9 @@ public class MatchHandlingThread extends Thread{
                 Logger.getLogger(MatchHandlingThread.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        
+        mapOnlineUsers.get(username1).getUser().setStatus(User.FREE);
+        mapOnlineUsers.get(username2).getUser().setStatus(User.FREE);
     }
     
     private void updateResult(String winnerUsername){

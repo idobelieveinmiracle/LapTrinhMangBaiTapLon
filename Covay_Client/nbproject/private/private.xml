@@ -2,6 +2,13 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/E:/LapTrinhMang/BaiTapLon/LapTrinhMangBaiTapLon/Covay_Client/src/com/team6/views/SignUpForm.java</file>
+            <file>file:/E:/LapTrinhMang/BaiTapLon/LapTrinhMangBaiTapLon/Covay_Client/src/com/team6/views/ChangePasswordForm.java</file>
+            <file>file:/E:/LapTrinhMang/BaiTapLon/LapTrinhMangBaiTapLon/Covay_Client/src/com/team6/views/HomeForm.java</file>
+            <file>file:/E:/LapTrinhMang/BaiTapLon/LapTrinhMangBaiTapLon/Covay_Client/src/com/team6/runs/TestRun.java</file>
+            <file>file:/E:/LapTrinhMang/BaiTapLon/LapTrinhMangBaiTapLon/Covay_Client/src/com/team6/controllers/ClientMainController.java</file>
+            <file>file:/E:/LapTrinhMang/BaiTapLon/LapTrinhMangBaiTapLon/Covay_Client/src/com/team6/views/ChangeInfoForm.java</file>
+        </group>
     </open-files>
 </project-private>

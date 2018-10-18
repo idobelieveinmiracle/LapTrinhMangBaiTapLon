@@ -65,7 +65,7 @@ public class ClientMainController {
     private ChessBoard chessBoard;
     
     public ClientMainController() {
-        initVariables();
+        initVariablesWithoutJSON();
         initRMI();
         initForms();       
     }
@@ -143,6 +143,13 @@ public class ClientMainController {
         } catch (ParseException ex) {
             ex.printStackTrace();
         }
+    }
+    
+    private void initVariablesWithoutJSON(){
+        tcpPort = 9998;
+        rmiPort = 9999;
+        rmiHostName = "localhost";
+        rmiService = "rmiService";
     }
     
     public void setUser(User user){

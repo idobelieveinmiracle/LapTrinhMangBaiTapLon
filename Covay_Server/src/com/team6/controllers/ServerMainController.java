@@ -61,7 +61,7 @@ public class ServerMainController extends UnicastRemoteObject implements RMIInte
     
     public ServerMainController() throws RemoteException{ 
         mapOnlineUsers = new HashMap<>();
-        initVariables();
+        initVariablesWithoutJSON();
         createRegistry();
         createTCPServer();
         initConnection();
@@ -94,6 +94,13 @@ public class ServerMainController extends UnicastRemoteObject implements RMIInte
         } catch (ParseException ex) {
             Logger.getLogger(ServerMainController.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    private void initVariablesWithoutJSON(){
+        tcpPort = 9998;
+        rmiPort = 9999;
+        rmiAddress = "localhost";
+        rmiService = "rmiService";
     }
     
     private void createRegistry() throws RemoteException{

@@ -13,6 +13,7 @@ import com.team6.views.SignUpForm;
 import java.util.ArrayList;
 import java.util.HashSet;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 
 /**
  *
@@ -25,9 +26,8 @@ public class TestRun {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        JFrame fr = new ChangePasswordForm();
-        fr.setDefaultCloseOperation(3);
-        fr.setVisible(true);
+        JFrame fr = new JFrame();
+        JLabel lb = new JLabel("motherfucker");
         
     }
     

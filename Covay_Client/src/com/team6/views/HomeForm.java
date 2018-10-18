@@ -137,6 +137,7 @@ public class HomeForm extends JFrame{
         
         mdlListUsers.setColumnIdentifiers(columnNames);   
         tblListUsers.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        tblListUsers.getColumnModel().getColumn(3).setCellRenderer(new StatusColumnCellRenderer());
     }
     
     private void setButtonContent(){        

@@ -82,10 +82,14 @@ public class MatchHandlingThread extends Thread{
                                 updateResult(username2);
                                 player1OutputStream.writeObject(new Message("Result", "LOSE"));
                                 player2OutputStream.writeObject(new Message("Result", "WIN"));
+                                IODataCollection ioData = mapOnlineUsers.get(username2);
+                                ioData.getUser().setScore(ioData.getUser().getScore()+10);
                             } else {
                                 updateResult(username1);                                
                                 player2OutputStream.writeObject(new Message("Result", "LOSE"));
                                 player1OutputStream.writeObject(new Message("Result", "WIN"));
+                                IODataCollection ioData = mapOnlineUsers.get(username1);
+                                ioData.getUser().setScore(ioData.getUser().getScore()+10);
                             }
                             break;
                         }
@@ -94,8 +98,11 @@ public class MatchHandlingThread extends Thread{
                         System.out.println("Sent Move response to player 2");
                     }
                     else if (mess1.getTitle().equals("Crash")){
+                        updateResult(username2);   
                         player1OutputStream.writeObject(new Message("Result", "LOSE"));
                         player2OutputStream.writeObject(new Message("Result", "WIN"));
+                        IODataCollection ioData = mapOnlineUsers.get(username1);
+                        ioData.getUser().setScore(ioData.getUser().getScore()+10);
                         break;
                     }
                 }
@@ -121,10 +128,14 @@ public class MatchHandlingThread extends Thread{
                                 updateResult(username2);
                                 player1OutputStream.writeObject(new Message("Result", "LOSE"));
                                 player2OutputStream.writeObject(new Message("Result", "WIN"));
+                                IODataCollection ioData = mapOnlineUsers.get(username2);
+                                ioData.getUser().setScore(ioData.getUser().getScore()+10);
                             } else {
                                 updateResult(username1);                                
                                 player2OutputStream.writeObject(new Message("Result", "LOSE"));
                                 player1OutputStream.writeObject(new Message("Result", "WIN"));
+                                IODataCollection ioData = mapOnlineUsers.get(username1);
+                                ioData.getUser().setScore(ioData.getUser().getScore()+10);
                             }
                             break;
                         }
@@ -132,9 +143,12 @@ public class MatchHandlingThread extends Thread{
                         player1OutputStream.writeObject(new Message("Move", chessBoard));
                         System.out.println("Sent Move response to player 1");
                     }
-                    else if (mess2.getTitle().equals("Crash")){
+                    else if (mess2.getTitle().equals("Crash")){                        
+                        updateResult(username1);   
                         player1OutputStream.writeObject(new Message("Result", "WIN"));
-                        player2OutputStream.writeObject(new Message("Result", "LOSE"));      
+                        player2OutputStream.writeObject(new Message("Result", "LOSE"));
+                        IODataCollection ioData = mapOnlineUsers.get(username1);
+                        ioData.getUser().setScore(ioData.getUser().getScore()+10);      
                         break;
                     }
                 }

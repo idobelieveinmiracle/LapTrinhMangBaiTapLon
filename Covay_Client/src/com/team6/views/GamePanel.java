@@ -19,11 +19,15 @@ import javax.swing.JPanel;
  */
 public class GamePanel extends JPanel implements MouseListener{
     
+    private String username1;
+    private String username2;
     private ChessBoard chessBoard;
     private int z = 40;
     private int side;
     
-    public GamePanel(ChessBoard chessBoard){
+    public GamePanel(ChessBoard chessBoard, String username1, String username2){
+        this.username1 = username1;
+        this.username2 = username2;
         this.setSize(400, 400);
         this.chessBoard = chessBoard;
         this.side = 0;
@@ -54,8 +58,8 @@ public class GamePanel extends JPanel implements MouseListener{
         g2.fillRect(0, 0, 400, 400);
         
         g2.setColor(Color.BLACK);
-        g2.drawString("Black: "+chessBoard.getBlackScore(), 10, 15);
-        g2.drawString("White: "+chessBoard.getWhiteScore(), 70, 15);
+        g2.drawString("Black: "+username1+": "+chessBoard.getBlackScore(), 10, 15);
+        g2.drawString("White: "+username2+": "+chessBoard.getWhiteScore(), 150, 15);
         
         g2.setColor(Color.BLACK);
         for (int i = 1; i <= 9; i++){

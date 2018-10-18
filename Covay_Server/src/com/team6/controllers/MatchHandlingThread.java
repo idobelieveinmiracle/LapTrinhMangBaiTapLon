@@ -6,6 +6,7 @@
 package com.team6.controllers;
 
 import com.team6.common.ChessBoard;
+import com.team6.common.Match;
 import com.team6.common.Message;
 import com.team6.common.User;
 import com.team6.models.IODataCollection;
@@ -52,11 +53,16 @@ public class MatchHandlingThread extends Thread{
         ObjectInputStream player2InputStream = player2IO.getOis();
         
         try {
-            player1OutputStream.writeObject(new Message("OpenMatch", "player1"));
-            player2OutputStream.writeObject(new Message("OpenMatch", "player2"));
+            Match m = new Match(username1, username2);
+            m.setId(1);
+            player1OutputStream.writeObject(new Message("OpenMatch", m));
+            m.setId(2);
+            player2OutputStream.writeObject(new Message("OpenMatch", m));
         } catch (IOException ex) {
             Logger.getLogger(MatchHandlingThread.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+        int winner = 0;
         
         while (true){
             try {
@@ -64,7 +70,7 @@ public class MatchHandlingThread extends Thread{
                 try{
                     o = player1InputStream.readObject();
                 } catch (SocketException e){
-                    updateResult(username2);
+                    winner = 2;
 //                    player1OutputStream.writeObject(new Message("Result", "LOSE"));
                     player2OutputStream.writeObject(new Message("Result", "WIN"));
                     break;
@@ -79,17 +85,13 @@ public class MatchHandlingThread extends Thread{
                         
                         if (chessBoard.getCountTurn()== 81){
                             if (chessBoard.getBlackScore()>40){
-                                updateResult(username2);
+                                winner = 2;
                                 player1OutputStream.writeObject(new Message("Result", "LOSE"));
                                 player2OutputStream.writeObject(new Message("Result", "WIN"));
-                                IODataCollection ioData = mapOnlineUsers.get(username2);
-                                ioData.getUser().setScore(ioData.getUser().getScore()+10);
                             } else {
-                                updateResult(username1);                                
+                                winner = 1;                
                                 player2OutputStream.writeObject(new Message("Result", "LOSE"));
                                 player1OutputStream.writeObject(new Message("Result", "WIN"));
-                                IODataCollection ioData = mapOnlineUsers.get(username1);
-                                ioData.getUser().setScore(ioData.getUser().getScore()+10);
                             }
                             break;
                         }
@@ -98,11 +100,10 @@ public class MatchHandlingThread extends Thread{
                         System.out.println("Sent Move response to player 2");
                     }
                     else if (mess1.getTitle().equals("Crash")){
-                        updateResult(username2);   
+                        System.out.println(username2);
+                        winner = 2;
                         player1OutputStream.writeObject(new Message("Result", "LOSE"));
                         player2OutputStream.writeObject(new Message("Result", "WIN"));
-                        IODataCollection ioData = mapOnlineUsers.get(username1);
-                        ioData.getUser().setScore(ioData.getUser().getScore()+10);
                         break;
                     }
                 }
@@ -110,7 +111,7 @@ public class MatchHandlingThread extends Thread{
                 try{
                     o = player2InputStream.readObject();
                 } catch (SocketException e) {
-                    updateResult(username1);                                
+                    winner = 1;                             
 //                    player2OutputStream.writeObject(new Message("Result", "LOSE"));
                     player1OutputStream.writeObject(new Message("Result", "WIN"));
                     break;
@@ -125,17 +126,13 @@ public class MatchHandlingThread extends Thread{
                         
                         if (chessBoard.getCountTurn()== 81){
                             if (chessBoard.getBlackScore()>40){
-                                updateResult(username2);
+                                winner = 2;
                                 player1OutputStream.writeObject(new Message("Result", "LOSE"));
                                 player2OutputStream.writeObject(new Message("Result", "WIN"));
-                                IODataCollection ioData = mapOnlineUsers.get(username2);
-                                ioData.getUser().setScore(ioData.getUser().getScore()+10);
                             } else {
-                                updateResult(username1);                                
+                                winner = 1;                            
                                 player2OutputStream.writeObject(new Message("Result", "LOSE"));
                                 player1OutputStream.writeObject(new Message("Result", "WIN"));
-                                IODataCollection ioData = mapOnlineUsers.get(username1);
-                                ioData.getUser().setScore(ioData.getUser().getScore()+10);
                             }
                             break;
                         }
@@ -143,12 +140,11 @@ public class MatchHandlingThread extends Thread{
                         player1OutputStream.writeObject(new Message("Move", chessBoard));
                         System.out.println("Sent Move response to player 1");
                     }
-                    else if (mess2.getTitle().equals("Crash")){                        
-                        updateResult(username1);   
+                    else if (mess2.getTitle().equals("Crash")){  
+                        System.out.println(username1); 
+                        winner = 1;
                         player1OutputStream.writeObject(new Message("Result", "WIN"));
-                        player2OutputStream.writeObject(new Message("Result", "LOSE"));
-                        IODataCollection ioData = mapOnlineUsers.get(username1);
-                        ioData.getUser().setScore(ioData.getUser().getScore()+10);      
+                        player2OutputStream.writeObject(new Message("Result", "LOSE"));   
                         break;
                     }
                 }
@@ -159,11 +155,23 @@ public class MatchHandlingThread extends Thread{
             }
         }
         
+        if (winner == 1){       
+            System.out.println("player 1 win "+username1);
+            updateResult(username1, username2);   
+            IODataCollection ioData = mapOnlineUsers.get(username1);
+            ioData.getUser().setScore(ioData.getUser().getScore()+10);   
+        } else if (winner == 2){            
+            System.out.println("player 2 win "+username2);
+            updateResult(username2, username1);
+            IODataCollection ioData = mapOnlineUsers.get(username2);
+            ioData.getUser().setScore(ioData.getUser().getScore()+10);
+        }
+        
         mapOnlineUsers.get(username1).getUser().setStatus(User.FREE);
         mapOnlineUsers.get(username2).getUser().setStatus(User.FREE);
     }
     
-    private void updateResult(String winnerUsername){
+    private void updateResult(String winnerUsername, String loserUsername){
         String sqlSelect, sqlExec;
         PreparedStatement stm = null;
         ResultSet rs = null;
@@ -181,6 +189,23 @@ public class MatchHandlingThread extends Thread{
             stm = conn.prepareStatement(sqlExec);
             stm.setInt(1, score+10);
             stm.setString(2, winnerUsername);
+            stm.executeUpdate();
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(MatchHandlingThread.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        sqlExec = "INSERT INTO tbl_match(time, user1, user2, winner) VALUES(?, ?, ?, ?)";
+        
+        try {
+            stm = conn.prepareStatement(sqlExec);
+            
+            stm.setString(1, Match.getDateString());
+            stm.setString(2, username1);
+            stm.setString(3, username2);
+            if (username1.equals(winnerUsername)) stm.setInt(4, 1);
+            else stm.setInt(4, 2);
+            
             stm.executeUpdate();
             
         } catch (SQLException ex) {

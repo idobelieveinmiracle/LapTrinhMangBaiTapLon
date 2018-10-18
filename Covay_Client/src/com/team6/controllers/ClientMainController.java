@@ -262,6 +262,7 @@ public class ClientMainController {
             }
             
             if (e.getSource().equals(homeForm.getBtnChangeInfo())){
+                changeInfoForm.setName(user.getName());
                 homeForm.setVisible(false);
                 changeInfoForm.setVisible(true);
             }
@@ -274,6 +275,7 @@ public class ClientMainController {
             if (e.getSource().equals(changeInfoForm.getBtnChange())){
                 try {
                     rmiServer.changeDisplayName(user.getUsername(), changeInfoForm.getName());
+                    user.setName(changeInfoForm.getName());
                     JOptionPane.showMessageDialog(changeInfoForm, "Cậu đã thay đổi tên hiển thị thành công");
                     changeInfoForm.setVisible(false);
                     homeForm.changeDisplayName(changeInfoForm.getName());

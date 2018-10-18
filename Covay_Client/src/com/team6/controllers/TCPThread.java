@@ -6,6 +6,7 @@
 package com.team6.controllers;
 
 import com.team6.common.ChessBoard;
+import com.team6.common.Match;
 import com.team6.common.Message;
 import com.team6.common.User;
 import com.team6.views.GameFrame;
@@ -89,7 +90,10 @@ public class TCPThread extends Thread{
                     }
                     
                     if (message.getTitle().equals("OpenMatch")){
-                        GamePanel gamePanel = new GamePanel(new ChessBoard());
+                        Match match = (Match) message.getContent();
+                        GamePanel gamePanel = null;
+                        if(match.getId() == 1)  gamePanel = new GamePanel(new ChessBoard(), match.getUser1()+"(You)", match.getUser2());
+                        else gamePanel = new GamePanel(new ChessBoard(), match.getUser1(), match.getUser2()+"(You)");
                         GameFrame gameFrame = new GameFrame(gamePanel);
                         
                         gameFrame.addWindowListener(new WindowAdapter() {
@@ -106,7 +110,7 @@ public class TCPThread extends Thread{
                         
                         homeForm.setVisible(false);
                         gameFrame.setVisible(true);
-                        if (message.getContent().equals("player1")){
+                        if (match.getId() == 1){
                             gamePanel.setSide(ChessBoard.WHITE);
                             ChessBoard chessBoard;
                             

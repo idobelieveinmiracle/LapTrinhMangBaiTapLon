@@ -58,8 +58,8 @@ public class GamePanel extends JPanel implements MouseListener{
         g2.fillRect(0, 0, 400, 400);
         
         g2.setColor(Color.BLACK);
-        g2.drawString("Black: "+username1+": "+chessBoard.getBlackScore(), 10, 15);
-        g2.drawString("White: "+username2+": "+chessBoard.getWhiteScore(), 150, 15);
+        g2.drawString("Black: "+username2+": "+chessBoard.getBlackScore(), 10, 15);
+        g2.drawString("White: "+username1+": "+chessBoard.getWhiteScore(), 150, 15);
         
         g2.setColor(Color.BLACK);
         for (int i = 1; i <= 9; i++){

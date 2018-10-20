@@ -267,7 +267,6 @@ public class ServerMainController extends UnicastRemoteObject implements RMIInte
         ObjectOutputStream oos1 = player1IO.getOos();
         ObjectInputStream ois1 = player1IO.getOis();
         
-        ObjectOutputStream oos2 = player2IO.getOos();
         
         try {
             oos1.writeObject(new Message("Invite", inviter));

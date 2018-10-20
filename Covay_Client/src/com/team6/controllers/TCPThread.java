@@ -92,7 +92,7 @@ public class TCPThread extends Thread{
                     if (message.getTitle().equals("OpenMatch")){
                         Match match = (Match) message.getContent();
                         GamePanel gamePanel = null;
-                        if(match.getId() == 1)  gamePanel = new GamePanel(new ChessBoard(), match.getUser1()+"(You)", match.getUser2());
+                        if(match.getUser1().equals(user.getUsername()))  gamePanel = new GamePanel(new ChessBoard(), match.getUser1()+"(You)", match.getUser2());
                         else gamePanel = new GamePanel(new ChessBoard(), match.getUser1(), match.getUser2()+"(You)");
                         GameFrame gameFrame = new GameFrame(gamePanel);
                         

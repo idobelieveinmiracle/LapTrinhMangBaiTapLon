@@ -34,7 +34,7 @@ public class MatchHandlingThread extends Thread{
     private String username2;
     private Connection conn;
 
-    public MatchHandlingThread(IODataCollection player2IO, IODataCollection player1IO, String username1, String username2, Connection conn, HashMap<String, IODataCollection> mapOnlineUser) {
+    public MatchHandlingThread(IODataCollection player1IO, IODataCollection player2IO, String username1, String username2, Connection conn, HashMap<String, IODataCollection> mapOnlineUser) {
         this.mapOnlineUsers = mapOnlineUser;
         this.player2IO = player2IO;
         this.player1IO = player1IO;
@@ -102,6 +102,7 @@ public class MatchHandlingThread extends Thread{
                     else if (mess1.getTitle().equals("Crash")){
                         System.out.println(username2);
                         winner = 2;
+                        System.out.println("Player 1 crash, player 2 win");
                         player1OutputStream.writeObject(new Message("Result", "LOSE"));
                         player2OutputStream.writeObject(new Message("Result", "WIN"));
                         break;
@@ -163,12 +164,14 @@ public class MatchHandlingThread extends Thread{
         } else if (winner == 2){            
             System.out.println("player 2 win "+username2);
             updateResult(username2, username1);
+            System.out.println(username2);
             IODataCollection ioData = mapOnlineUsers.get(username2);
             ioData.getUser().setScore(ioData.getUser().getScore()+10);
         }
         
         mapOnlineUsers.get(username1).getUser().setStatus(User.FREE);
         mapOnlineUsers.get(username2).getUser().setStatus(User.FREE);
+        
     }
     
     private void updateResult(String winnerUsername, String loserUsername){

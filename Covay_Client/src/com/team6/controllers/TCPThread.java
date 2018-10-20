@@ -8,6 +8,7 @@ package com.team6.controllers;
 import com.team6.common.ChessBoard;
 import com.team6.common.Match;
 import com.team6.common.Message;
+import com.team6.common.RMIInterface;
 import com.team6.common.User;
 import com.team6.views.GameFrame;
 import com.team6.views.GamePanel;
@@ -32,9 +33,12 @@ public class TCPThread extends Thread{
     private User user;
     private String enemyName;
     private Socket socket;
+    RMIInterface rmiServer;
+    int side = 0;
     ObjectOutputStream oos = null;
     ObjectInputStream ois = null;
-    public TCPThread(HomeForm homeForm, User user, Socket socket) {
+    public TCPThread(HomeForm homeForm, User user, Socket socket, RMIInterface rmiServer) {
+        this.rmiServer = rmiServer;
         this.homeForm = homeForm;
         this.user = user;
         this.socket = socket;
@@ -89,10 +93,22 @@ public class TCPThread extends Thread{
                         } else oos.writeObject(new Message("DE", null));
                     }
                     
+                    if (message.getTitle().equals("Rematch")){
+                        if (JOptionPane.showConfirmDialog(homeForm, 
+                                message.getContent().toString()+
+                                " muốn chơi lại với cậu với cậu, cậu có đồng ý không?")==0){
+                            oos.writeObject(new Message("AC", null));
+                            System.out.println("Playing...");
+                        } else oos.writeObject(new Message("DE", null));
+                    }
+                    
                     if (message.getTitle().equals("OpenMatch")){
                         Match match = (Match) message.getContent();
                         GamePanel gamePanel = null;
-                        if(match.getUser1().equals(user.getUsername()))  gamePanel = new GamePanel(new ChessBoard(), match.getUser1()+"(You)", match.getUser2());
+                        if(match.getUser1().equals(user.getUsername()))  {
+                            side = 1;
+                            gamePanel = new GamePanel(new ChessBoard(), match.getUser1()+"(You)", match.getUser2());
+                        }
                         else gamePanel = new GamePanel(new ChessBoard(), match.getUser1(), match.getUser2()+"(You)");
                         GameFrame gameFrame = new GameFrame(gamePanel);
                         
@@ -101,6 +117,11 @@ public class TCPThread extends Thread{
                             public void windowClosing(WindowEvent e){
                                 try {
                                     oos.writeObject(new Message("Crash", null));
+                                    if (side == 1){
+                                        if(!rmiServer.rematch(enemyName, user.getUsername()))
+                                            JOptionPane.showMessageDialog(homeForm, "Đối thủ từ chối chơi lại");
+                                        else System.out.println("smth wrong");
+                                    }
                                 } catch (IOException ex) {
                                     Logger.getLogger(TCPThread.class.getName()).log(Level.SEVERE, null, ex);
                                 }
@@ -147,6 +168,13 @@ public class TCPThread extends Thread{
                                             gameFrame.setVisible(false);
                                             homeForm.setVisible(true);
                                         }
+                                        
+                                        if (JOptionPane.showConfirmDialog(homeForm, "Cậu có muốn chơi lại không?") == 0){
+                                            if(!rmiServer.rematch(enemyName, user.getUsername()))
+                                                JOptionPane.showMessageDialog(homeForm, "Đối thủ từ chối chơi lại");
+                                            else System.out.println("smth wrong");
+                                        }
+                                        
                                         break;
                                     }
                                 }

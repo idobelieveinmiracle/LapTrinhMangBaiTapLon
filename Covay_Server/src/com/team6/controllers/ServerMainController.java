@@ -326,5 +326,44 @@ public class ServerMainController extends UnicastRemoteObject implements RMIInte
             Logger.getLogger(ServerMainController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
+    @Override
+    public boolean rematch(String username1, String username2) throws RemoteException {
+        IODataCollection player1IO = mapOnlineUsers.get(username1);
+        IODataCollection player2IO = mapOnlineUsers.get(username2);
+        
+        ObjectOutputStream oos1 = player1IO.getOos();
+        ObjectInputStream ois1 = player1IO.getOis();
+        
+        
+        try {
+            oos1.writeObject(new Message("Remacth", username1));
+            
+            Object o = ois1.readObject();
+            
+            if (o instanceof Message){
+                Message message = (Message) o;
+                
+                if (message.getTitle().equals("AC")) {
+                    System.out.println("User accepted");
+                    mapOnlineUsers.get(username1).getUser().setStatus(User.BUSY);                    
+                    mapOnlineUsers.get(username2).getUser().setStatus(User.BUSY);
+                    new MatchHandlingThread(player1IO, player2IO, username1, username2, conn, mapOnlineUsers).start();
+                    return true;
+                }
+                else {
+                    System.out.println("User declided");
+                    return false;
+                }
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(ServerMainController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(ServerMainController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        
+        return false;
+    }
     
 }

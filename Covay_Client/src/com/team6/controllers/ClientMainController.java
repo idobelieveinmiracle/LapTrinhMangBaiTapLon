@@ -194,7 +194,7 @@ public class ClientMainController {
                             tcpSocket = new Socket(rmiHostName, tcpPort);
                             
                             System.out.println("Socket: "+tcpSocket.getLocalAddress());
-                            new TCPThread(homeForm, user, tcpSocket).start();
+                            new TCPThread(homeForm, user, tcpSocket, rmiServer).start();
                         } else JOptionPane.showMessageDialog(loginForm, "Cậu đã nhập sai tên đăng nhập hoặc mật khẩu");
                     } catch (RemoteException ex) {
                         JOptionPane.showMessageDialog(loginForm, "Tớ cảm thấy có gì đó sai sai");

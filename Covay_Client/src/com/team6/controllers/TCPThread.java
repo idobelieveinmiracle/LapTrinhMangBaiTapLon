@@ -37,6 +37,7 @@ public class TCPThread extends Thread{
     int side = 0;
     ObjectOutputStream oos = null;
     ObjectInputStream ois = null;
+    
     public TCPThread(HomeForm homeForm, User user, Socket socket, RMIInterface rmiServer) {
         this.rmiServer = rmiServer;
         this.homeForm = homeForm;
@@ -94,6 +95,7 @@ public class TCPThread extends Thread{
                     }
                     
                     if (message.getTitle().equals("Rematch")){
+                        System.out.println("Received rematch request");
                         if (JOptionPane.showConfirmDialog(homeForm, 
                                 message.getContent().toString()+
                                 " muốn chơi lại với cậu với cậu, cậu có đồng ý không?")==0){
@@ -105,8 +107,10 @@ public class TCPThread extends Thread{
                     if (message.getTitle().equals("OpenMatch")){
                         Match match = (Match) message.getContent();
                         GamePanel gamePanel = null;
+                        enemyName = match.getUser1();
                         if(match.getUser1().equals(user.getUsername()))  {
                             side = 1;
+                            enemyName = match.getUser2();
                             gamePanel = new GamePanel(new ChessBoard(), match.getUser1()+"(You)", match.getUser2());
                         }
                         else gamePanel = new GamePanel(new ChessBoard(), match.getUser1(), match.getUser2()+"(You)");
@@ -118,6 +122,7 @@ public class TCPThread extends Thread{
                                 try {
                                     oos.writeObject(new Message("Crash", null));
                                     if (side == 1){
+                                        System.out.println("Sending request to "+enemyName);
                                         if(!rmiServer.rematch(enemyName, user.getUsername()))
                                             JOptionPane.showMessageDialog(homeForm, "Đối thủ từ chối chơi lại");
                                         else System.out.println("smth wrong");
@@ -170,6 +175,7 @@ public class TCPThread extends Thread{
                                         }
                                         
                                         if (JOptionPane.showConfirmDialog(homeForm, "Cậu có muốn chơi lại không?") == 0){
+                                            System.out.println("Sending request to "+enemyName);
                                             if(!rmiServer.rematch(enemyName, user.getUsername()))
                                                 JOptionPane.showMessageDialog(homeForm, "Đối thủ từ chối chơi lại");
                                             else System.out.println("smth wrong");

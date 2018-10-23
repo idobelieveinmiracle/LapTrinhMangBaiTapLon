@@ -337,7 +337,7 @@ public class ServerMainController extends UnicastRemoteObject implements RMIInte
         
         
         try {
-            oos1.writeObject(new Message("Remacth", username1));
+            oos1.writeObject(new Message("Rematch", username1));
             
             Object o = ois1.readObject();
             
